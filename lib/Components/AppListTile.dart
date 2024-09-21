@@ -19,6 +19,8 @@ class AppListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
+    final width = MediaQuery.sizeOf(context).width;
     return ListTile(
       title: Text(
         title,
@@ -42,9 +44,13 @@ class AppListTile extends StatelessWidget {
             style: const TextStyle(fontFamily: 'pop', fontSize: 11),
           ),
           isOnline
-              ? const CircleAvatar(
-                  backgroundColor: Colors.green,
-                  radius: 5,
+              ? Container(
+                  width: height * 0.01,
+                  height: height * 0.01,
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 0.7, color: Colors.black),
+                      shape: BoxShape.circle,
+                      color: Colors.green),
                 )
               : const SizedBox()
         ],

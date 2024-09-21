@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true, // Opt-in for Material 3 design
       ),
       onGenerateRoute: AppRoutesSetting.generateRoutes,
-      initialRoute: RoutesName.settingView,
+      initialRoute: RoutesName.chatView,
     );
   }
 }

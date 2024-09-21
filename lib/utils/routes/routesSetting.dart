@@ -7,28 +7,32 @@ import 'package:linkup/features/splash/view/splash_view.dart';
 import 'package:linkup/features/welcomeview/view/welcome_view.dart';
 import 'package:linkup/utils/routes/routesName.dart';
 
-class AppRoutesSetting{
-  static Route<dynamic> generateRoutes(RouteSettings settings){
-    switch(settings.name)
-        {
+import '../../features/password/view/password_view.dart';
+
+class AppRoutesSetting {
+  static Route<dynamic> generateRoutes(RouteSettings settings) {
+    switch (settings.name) {
       case RoutesName.homeView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const HomeView());
-        case RoutesName.continueView:
+      case RoutesName.continueView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const ContinueView());
-        case RoutesName.chatView:
+      case RoutesName.chatView:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const ChatView());
-        case RoutesName.settingView:
+            builder: (BuildContext context) =>  ChatView());
+      case RoutesName.settingView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SettingsView());
-        case RoutesName.splashView:
+      case RoutesName.splashView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SplashView());
-        case RoutesName.welcomeView:
+      case RoutesName.welcomeView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const WelcomeView());
+      case RoutesName.passwordView:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const PasswordView());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

@@ -1,4 +1,4 @@
-package com.atifiy.bluechat
+package com.atifiy.linkup
 
 import io.flutter.embedding.android.FlutterActivity
 

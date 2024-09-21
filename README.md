@@ -1,4 +1,4 @@
-# bluechat
+# linkup
 
 A new Flutter project.
 

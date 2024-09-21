@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'View/ContinueScreen/ContinueScreen.dart';
-import 'View/HomeView.dart';
+import 'package:linkup/utils/routes/routesName.dart';
+import 'package:linkup/utils/routes/routesSetting.dart';
+import 'features/Continue/View/ContinueScreen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
-
+ ThemeData theme=ThemeData();
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -15,12 +16,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.black, // Primary color
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.black, // Seed color for ColorScheme
+          seedColor: Colors.white, // Seed color for ColorScheme
           primary: Colors.black, // Primary color for components
-          secondary: Colors.green, // Secondary color
+          secondary: Colors.blue, // Secondary color
           background: Colors.white, // Background color
           surface: Colors.grey, // Surface color (like Card, AppBar background)
         ),
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none
-// Border color when focused
+              // Border color when focused
               ),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -56,23 +58,31 @@ class MyApp extends StatelessWidget {
           bodySmall: TextStyle(
               color: Colors.black, fontFamily: 'pop'), // Body text style
           bodyMedium: TextStyle(
-              color: Colors.black54,
+              color: Colors.black,
               fontFamily: 'pop'), // Secondary body text style
           titleLarge: TextStyle(
               color: Colors.black,
               fontSize: 32,
               fontFamily: 'pop',
               fontWeight: FontWeight.w700),
+          headlineMedium: TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontFamily: 'pop',
+              fontWeight: FontWeight.w900),
           labelSmall: TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontFamily: 'pop',
               fontWeight: FontWeight.w600), // App title text style
+        ),/**/
+        iconTheme: const IconThemeData(
+          color: Colors.black,
         ),
-
         useMaterial3: true, // Opt-in for Material 3 design
       ),
-      home: const ContinueScreen(),
+      onGenerateRoute: AppRoutesSetting.generateRoutes,
+      initialRoute: RoutesName.settingView,
     );
   }
 }

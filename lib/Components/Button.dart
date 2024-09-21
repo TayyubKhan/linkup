@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AppButton extends StatelessWidget {
-  final String? title;
+  final String title;
   final VoidCallback? onTap;
 
-  const AppButton({super.key, this.title, this.onTap});
+  const AppButton({super.key, this.title='', this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class AppButton extends StatelessWidget {
             color: Colors.black, borderRadius: BorderRadius.circular(35)),
         child: Center(
           child: Text(
-            title! ?? "",
+            title,
             style: Theme.of(context).textTheme.labelSmall,
           ),
         ),

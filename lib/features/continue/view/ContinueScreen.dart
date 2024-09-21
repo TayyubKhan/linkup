@@ -1,15 +1,17 @@
-import 'package:bluechat/Components/Button.dart';
+import 'package:linkup/Components/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class ContinueScreen extends StatefulWidget {
-  const ContinueScreen({super.key});
+import '../../../utils/routes/routesName.dart';
+
+class ContinueView extends StatefulWidget {
+  const ContinueView({super.key});
 
   @override
-  State<ContinueScreen> createState() => _ContinueScreenState();
+  State<ContinueView> createState() => _ContinueViewState();
 }
 
-class _ContinueScreenState extends State<ContinueScreen> {
+class _ContinueViewState extends State<ContinueView> {
   final nameController = TextEditingController();
 
   @override
@@ -43,7 +45,10 @@ class _ContinueScreenState extends State<ContinueScreen> {
               ],
             )),
             Gap(height * 0.03),
-            const AppButton(
+             AppButton(
+              onTap: (){
+                Navigator.pushNamed(context, RoutesName.homeView);
+              },
               title: "Continue",
             )
           ],

@@ -13,12 +13,14 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   @override
-  Widget build(BuildContext context) {  final height = MediaQuery.sizeOf(context).height;
-  final width = MediaQuery.sizeOf(context).width;
+  Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
+    final width = MediaQuery.sizeOf(context).width;
     return PopScope(
       canPop: false,
       child: Scaffold(
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           elevation: 0,
           backgroundColor: Colors.transparent,
           title: Text(
@@ -41,15 +43,18 @@ class _HomeViewState extends State<HomeView> {
             )
           ],
         ),
-        body: Column(
-          children: [
-            AppListTile(
-              title: "Tayyub",
-              message: "Let's Try LinkUp!",
-              time: "9/21",
-            )
-          ],
-        ),
+        body: ListView.builder(
+            itemCount: 1,
+            itemBuilder: (context, i) {
+              return AppListTile(
+                onTap: () {
+                  Navigator.pushNamed(context, RoutesName.chatView);
+                },
+                title: "Tayyub",
+                message: "Let's Try LinkUp!",
+                time: "9/21",
+              );
+            }),
       ),
     );
   }

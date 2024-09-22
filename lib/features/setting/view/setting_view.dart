@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:linkup/Components/AppListTile.dart';
 import 'package:linkup/Components/settingListTile.dart';
+
+import '../../../Components/backicon.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -15,15 +16,7 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-        ),
+        leading: const AppBackButton(),
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Text(

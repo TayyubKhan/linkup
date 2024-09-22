@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'dart:math';
+
+import 'package:linkup/Components/backicon.dart';
 
 class ChatView extends StatefulWidget {
   @override
@@ -8,83 +13,131 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
+  List<types.Message> _messages = [];
+  final _user = const types.User(id: 'user1'); // Your user ID
   bool isEmojiVisible = false;
   TextEditingController _controller = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _messages = _generateMessages(); // Example messages
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text('Contact Name', style: TextStyle(color: Colors.white)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {},
+    final height = MediaQuery.sizeOf(context).height;
+    final width = MediaQuery.sizeOf(context).width;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (v, b) {
+        setState(() {
+          isEmojiVisible = false;
+        });
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: false,
+        extendBody: false,
+        backgroundColor: Color(0xffF7F7F7),
+        appBar: AppBar(
+          leading: const AppBackButton(),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text(
+            'Tayyub',
+            style: Theme.of(context).textTheme.titleLarge,
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: 20, // Example message count
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Align(
-                    alignment: index % 2 == 0 ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: index % 2 == 0 ? Colors.blue : Colors.grey[800],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                      child: Text(
-                        'Message $index',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                );
-              },
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.more_vert, color: Color(0xff1a1a1a)),
+              onPressed: () {},
             ),
-          ),
-          _buildChatInputField(),
-          isEmojiVisible ? _buildEmojiPicker() : Container(),
-        ],
+          ],
+          scrolledUnderElevation: 0,
+        ),
+        body: Stack(
+          children: [
+            Opacity(
+              opacity: 0.1,
+              child: Image(
+                  height: height,
+                  width: width,
+                  fit: BoxFit.cover,
+                  image: const AssetImage('assets/back.jpg')),
+            ),
+            Chat(
+              messages: _messages,
+              onSendPressed: _handleSendPressed,
+              user: _user,
+              theme: const DefaultChatTheme(
+                backgroundColor: Colors.transparent,
+                inputBackgroundColor: Color(0xff1a1a1a),
+                inputTextColor: Color(0xffF7F7F7),
+                primaryColor: Color(0xff1a1a1a),
+              ),
+              customBottomWidget: _buildInputArea(),
+            ),
+            isEmojiVisible ? _buildEmojiPicker() : Container(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildChatInputField() {
+  List<types.Message> _generateMessages() {
+    return List.generate(10, (index) {
+      return types.TextMessage(
+        author: _user,
+        id: Random().nextInt(100).toString(),
+        text: 'Message $index',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      );
+    });
+  }
+
+  void _handleSendPressed(types.PartialText message) {
+    final textMessage = types.TextMessage(
+      author: _user,
+      id: Random().nextInt(100).toString(),
+      text: message.text,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+
+    setState(() {
+      _messages.insert(0, textMessage);
+    });
+  }
+
+  Widget _buildInputArea() {
     return Container(
-      color: Colors.black,
-      padding: const EdgeInsets.all(8),
+      color: Color(0xffF7F7F7),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         children: [
+          // Emoji button
           IconButton(
-            icon: const Icon(Icons.emoji_emotions, color: Colors.white),
+            icon:
+                const Icon(Icons.emoji_emotions_outlined, color: Color(0xff1a1a1a)),
             onPressed: () {
               setState(() {
                 isEmojiVisible = !isEmojiVisible;
               });
             },
           ),
+          // File Picker button
           IconButton(
-            icon: const Icon(Icons.attach_file, color: Colors.white),
+            icon: const Icon(Icons.attach_file, color: Color(0xff1a1a1a)),
             onPressed: () async {
               FilePickerResult? result = await FilePicker.platform.pickFiles();
               if (result != null) {
-                print('File selected: ${result.files.single.name}');
+                final pickedFile = result.files.first;
               }
             },
           ),
           Expanded(
             child: TextField(
               controller: _controller,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Color(0xffF7F7F7)),
               decoration: const InputDecoration(
                 hintText: 'Type a message',
                 hintStyle: TextStyle(color: Colors.grey),
@@ -98,11 +151,12 @@ class _ChatViewState extends State<ChatView> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.send, color: Colors.blue),
+            icon: const Icon(Icons.send, color: Color(0xff1a1a1a)),
             onPressed: () {
-              // Implement send message logic here
-              print('Message: ${_controller.text}');
-              _controller.clear();
+              if (_controller.text.isNotEmpty) {
+                _handleSendPressed(types.PartialText(text: _controller.text));
+                _controller.clear();
+              }
             },
           ),
         ],
@@ -112,10 +166,8 @@ class _ChatViewState extends State<ChatView> {
 
   Widget _buildEmojiPicker() {
     return EmojiPicker(
-      onEmojiSelected: (category,emoji) {
-        setState(() {
-          _controller.text += emoji.emoji;
-        });
+      onEmojiSelected: (category, emoji) {
+        _controller.text += emoji.emoji;
       },
       config: const Config(
         emojiViewConfig: EmojiViewConfig(
@@ -128,11 +180,8 @@ class _ChatViewState extends State<ChatView> {
           iconColor: Colors.grey,
           iconColorSelected: Colors.blue,
         ),
-        skinToneConfig: SkinToneConfig(
-          enabled: true,
-          indicatorColor: Colors.white,
-        ),
-
+        skinToneConfig: SkinToneConfig(),
+        bottomActionBarConfig: BottomActionBarConfig(),
         height: 256,
         swapCategoryAndBottomBar: false,
         checkPlatformCompatibility: true,

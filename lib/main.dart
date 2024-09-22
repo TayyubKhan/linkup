@@ -8,7 +8,9 @@ import 'features/Continue/View/ContinueScreen.dart';
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
- ThemeData theme=ThemeData();
+
+ThemeData theme = ThemeData();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -18,21 +20,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.black, // Primary color
+        primaryColor: const Color(0xff1a1a1a), // Primary color
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.white, // Seed color for ColorScheme
-          primary: Colors.black, // Primary color for components
+          seedColor: const Color(0xffF7F7F7), // Seed color for ColorScheme
+          primary: const Color(0xff1a1a1a), // Primary color for components
           secondary: Colors.blue, // Secondary color
-          background: Colors.white, // Background color
+          background: const Color(0xffF7F7F7), // Background color
           surface: Colors.grey, // Surface color (like Card, AppBar background)
         ),
-        scaffoldBackgroundColor: Colors.white, // Body background color
+        scaffoldBackgroundColor: const Color(0xffF7F7F7), // Body background color
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.black, // App bar background color
+          backgroundColor: Color(0xff1a1a1a), // App bar background color
           elevation: 10, // App bar elevation
-          iconTheme: IconThemeData(color: Colors.white), // App bar icon color
+          iconTheme: IconThemeData(color: Color(0xffF7F7F7)), // App bar icon color
           titleTextStyle: TextStyle(
-              color: Colors.white, fontSize: 20), // App bar title style
+              color: Color(0xffF7F7F7), fontSize: 20), // App bar title style
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
@@ -54,35 +56,36 @@ class MyApp extends StatelessWidget {
               color: Colors.grey[600], fontFamily: 'pop'), // Hint text style
         ),
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black, fontFamily: 'pop'), //
+          bodyLarge: TextStyle(color: Color(0xff1a1a1a), fontFamily: 'pop'), //
           bodySmall: TextStyle(
-              color: Colors.black, fontFamily: 'pop'), // Body text style
+              color: Color(0xff1a1a1a), fontFamily: 'pop'), // Body text style
           bodyMedium: TextStyle(
-              color: Colors.black,
+              color: Color(0xff1a1a1a),
               fontFamily: 'pop'), // Secondary body text style
           titleLarge: TextStyle(
-              color: Colors.black,
+              color: Color(0xff1a1a1a),
               fontSize: 32,
               fontFamily: 'pop',
               fontWeight: FontWeight.w700),
           headlineMedium: TextStyle(
-              color: Colors.black,
+              color: Color(0xff1a1a1a),
               fontSize: 22,
               fontFamily: 'pop',
               fontWeight: FontWeight.w900),
           labelSmall: TextStyle(
-              color: Colors.white,
+              color: Color(0xffF7F7F7),
               fontSize: 18,
               fontFamily: 'pop',
               fontWeight: FontWeight.w600), // App title text style
-        ),/**/
+        ),
+        /**/
         iconTheme: const IconThemeData(
-          color: Colors.black,
+          color: Color(0xff1a1a1a),
         ),
         useMaterial3: true, // Opt-in for Material 3 design
       ),
       onGenerateRoute: AppRoutesSetting.generateRoutes,
-      initialRoute: RoutesName.chatView,
+      initialRoute: RoutesName.welcomeView,
     );
   }
 }

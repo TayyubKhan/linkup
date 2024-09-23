@@ -10,6 +10,7 @@ void main() {
 }
 
 ThemeData theme = ThemeData();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,11 +29,13 @@ class MyApp extends StatelessWidget {
           background: const Color(0xffF7F7F7), // Background color
           surface: Colors.grey, // Surface color (like Card, AppBar background)
         ),
-        scaffoldBackgroundColor: const Color(0xffF7F7F7), // Body background color
+        scaffoldBackgroundColor:
+            const Color(0xffF7F7F7), // Body background color
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xff1a1a1a), // App bar background color
           elevation: 10, // App bar elevation
-          iconTheme: IconThemeData(color: Color(0xffF7F7F7)), // App bar icon color
+          iconTheme:
+              IconThemeData(color: Color(0xffF7F7F7)), // App bar icon color
           titleTextStyle: TextStyle(
               color: Color(0xffF7F7F7), fontSize: 20), // App bar title style
         ),
@@ -85,7 +88,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true, // Opt-in for Material 3 design
       ),
       onGenerateRoute: AppRoutesSetting.generateRoutes,
-      initialRoute: RoutesName.welcomeView,
+      initialRoute: RoutesName.splashView,
+      navigatorKey: navigatorKey,
     );
   }
 }

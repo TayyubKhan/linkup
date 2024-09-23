@@ -1,7 +1,11 @@
 class ContinueModel {
   String? name;
-  ContinueModel({this.name = ''});
-  ContinueModel copyWith({String? name}) {
-    return ContinueModel(name: name ?? this.name);
+  bool? isSaved;
+  ContinueModel({this.name = '', this.isSaved = false});
+  ContinueModel copyWith({String? name, bool? isSaved}) {
+    return ContinueModel(
+      name: name ?? this.name,
+      isSaved: isSaved ?? this.isSaved,
+    );
   }
 }

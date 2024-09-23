@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ContinueViewModel.dart';
+part of 'setting_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$continueViewModelHash() => r'e5565c24fd54c89e05ebb17ee023945de8630229';
+String _$notificationSwitchHash() =>
+    r'a32e1cbf8cbd0b87d0153bbbb45104b8b9e555b2';
 
-/// See also [ContinueViewModel].
-@ProviderFor(ContinueViewModel)
-final continueViewModelProvider =
-    AutoDisposeAsyncNotifierProvider<ContinueViewModel, ContinueModel>.internal(
-  ContinueViewModel.new,
-  name: r'continueViewModelProvider',
+/// See also [NotificationSwitch].
+@ProviderFor(NotificationSwitch)
+final notificationSwitchProvider =
+    AutoDisposeNotifierProvider<NotificationSwitch, bool>.internal(
+  NotificationSwitch.new,
+  name: r'notificationSwitchProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$continueViewModelHash,
+      : _$notificationSwitchHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ContinueViewModel = AutoDisposeAsyncNotifier<ContinueModel>;
+typedef _$NotificationSwitch = AutoDisposeNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

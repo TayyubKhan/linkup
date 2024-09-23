@@ -1,6 +1,9 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linkup/Components/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:linkup/features/continue/viewModel/ContinueViewModel.dart';
+import 'package:linkup/utils/Utils.dart';
 
 import '../../../utils/routes/routesName.dart';
 
@@ -13,6 +16,7 @@ class ContinueView extends StatefulWidget {
 
 class _ContinueViewState extends State<ContinueView> {
   final nameController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +40,38 @@ class _ContinueViewState extends State<ContinueView> {
             ),
             Gap(height * 0.01),
             Form(
+                key: _formKey,
                 child: Column(
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.tag), hintText: "Name"),
-                ),
-              ],
-            )),
-            Gap(height * 0.03),
-             AppButton(
-              onTap: (){
-                Navigator.pushNamed(context, RoutesName.homeView);
-              },
-              title: "Continue",
-            )
+                  children: [
+                    TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.tag), hintText: "Name"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your name'; // Return error message if empty
+                        }
+                        return null; // Return null if validation passes
+                      },
+                    ),
+                    Gap(height * 0.03),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        return AppButton(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              ref
+                                  .read(continueViewModelProvider.notifier)
+                                  .setName(nameController.text.toString());
+                              Navigator.pushNamed(context, RoutesName.homeView);
+                            }
+                          },
+                          title: "Continue",
+                        );
+                      },
+                    ),
+                  ],
+                )),
           ],
         ),
       ),

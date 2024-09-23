@@ -8,4 +8,5 @@ class RoutesName{
     static const String splashView="SplashView";
     static const String welcomeView="WelcomeView";
     static const String passwordView="PasswordView";
+    static const String searchView="SearchView";
 }

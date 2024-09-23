@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linkup/Components/AppListTile.dart';
+import 'package:linkup/features/continue/model/ConitnueModel.dart';
+import 'package:linkup/features/continue/viewModel/ContinueViewModel.dart';
 import 'package:linkup/utils/routes/routesName.dart';
 
 import '../../../main.dart';
@@ -23,10 +27,7 @@ class _HomeViewState extends State<HomeView> {
           scrolledUnderElevation: 0,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          title: Text(
-            "LinkUp",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          title: Text("LinkUp", style: Theme.of(context).textTheme.titleLarge),
           automaticallyImplyLeading: false,
           actions: [
             Padding(
@@ -50,11 +51,21 @@ class _HomeViewState extends State<HomeView> {
                 onTap: () {
                   Navigator.pushNamed(context, RoutesName.chatView);
                 },
-                title: "Tayyub",
+                title: "Atif",
                 message: "Let's Try LinkUp!",
                 time: "9/21",
               );
             }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            navigatorKey.currentState!.pushNamed(RoutesName.searchView);
+          },
+          backgroundColor: const Color(0xff1a1a1a),
+          child: const Icon(
+            CupertinoIcons.search,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

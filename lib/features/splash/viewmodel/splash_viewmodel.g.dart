@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ContinueViewModel.dart';
+part of 'splash_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$continueViewModelHash() => r'e5565c24fd54c89e05ebb17ee023945de8630229';
+String _$splashViewModelHash() => r'3312a5e133955674fd33d4be7cbebb0e2ee1a690';
 
-/// See also [ContinueViewModel].
-@ProviderFor(ContinueViewModel)
-final continueViewModelProvider =
-    AutoDisposeAsyncNotifierProvider<ContinueViewModel, ContinueModel>.internal(
-  ContinueViewModel.new,
-  name: r'continueViewModelProvider',
+/// See also [SplashViewModel].
+@ProviderFor(SplashViewModel)
+final splashViewModelProvider =
+    AutoDisposeAsyncNotifierProvider<SplashViewModel, bool>.internal(
+  SplashViewModel.new,
+  name: r'splashViewModelProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$continueViewModelHash,
+      : _$splashViewModelHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ContinueViewModel = AutoDisposeAsyncNotifier<ContinueModel>;
+typedef _$SplashViewModel = AutoDisposeAsyncNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

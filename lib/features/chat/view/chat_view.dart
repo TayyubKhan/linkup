@@ -8,6 +8,8 @@ import 'dart:math';
 import 'package:linkup/Components/backicon.dart';
 
 class ChatView extends StatefulWidget {
+  const ChatView({super.key});
+
   @override
   _ChatViewState createState() => _ChatViewState();
 }
@@ -38,13 +40,13 @@ class _ChatViewState extends State<ChatView> {
       child: Scaffold(
         extendBodyBehindAppBar: false,
         extendBody: false,
-        backgroundColor: Color(0xffF7F7F7),
+        backgroundColor: const Color(0xffF7F7F7),
         appBar: AppBar(
           leading: const AppBackButton(),
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: Text(
-            'Tayyub',
+            'Atif',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: [
@@ -110,7 +112,7 @@ class _ChatViewState extends State<ChatView> {
 
   Widget _buildInputArea() {
     return Container(
-      color: Color(0xffF7F7F7),
+      color: const Color(0xffF7F7F7),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         children: [

@@ -35,7 +35,7 @@ class _ContinueViewState extends State<ContinueView> {
             ),
             Gap(height * 0.01),
             Center(
-              child: Text('Connect. Chat. LinkUp!',
+              child: Text('Connect. ChatModel. LinkUp!',
                   style: Theme.of(context).textTheme.bodySmall),
             ),
             Gap(height * 0.01),

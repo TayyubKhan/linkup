@@ -30,7 +30,7 @@ class _WelcomeViewState extends State<WelcomeView> {
             )),
             Center(
                 child: Text(
-              "Seamlessly connect and chat with ease.",
+              "Seamlessly connect and ChatModel with ease.",
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             )),

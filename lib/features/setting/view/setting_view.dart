@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linkup/Components/AppListTile.dart';
 import 'package:linkup/Components/settingListTile.dart';
+import 'package:linkup/features/setting/viewmodel/LogoutViewModel.dart';
 import 'package:linkup/features/setting/viewmodel/setting_viewmodel.dart';
+import 'package:linkup/main.dart';
+import 'package:linkup/utils/routes/routesName.dart';
 
 import '../../../Components/backicon.dart';
 import '../../continue/viewModel/ContinueViewModel.dart';
@@ -57,13 +60,18 @@ class _SettingsViewState extends State<SettingsView> {
             widget: Consumer(
               builder: (context, ref, child) {
                 final switchValue = ref.watch(notificationSwitchProvider);
-                return Switch(
-                    value: switchValue,
-                    onChanged: (v) {
-                      ref
-                          .read(notificationSwitchProvider.notifier)
-                          .changeNotification();
-                    });
+                return switch (switchValue) {
+                  AsyncData(:final value) => Switch(
+                      value: switchValue.value,
+                      onChanged: (v) {
+                        ref
+                            .read(notificationSwitchProvider.notifier)
+                            .changeNotification();
+                      }),
+                  AsyncError() =>
+                    const Text('Oops, something unexpected happened'),
+                  _ => const CircularProgressIndicator(),
+                };
               },
             ),
           ),
@@ -73,7 +81,22 @@ class _SettingsViewState extends State<SettingsView> {
               'Update',
               style: Theme.of(context).textTheme.bodySmall,
             ),
-          )
+          ),
+          SettingListTile(
+              title: "Log Out",
+              widget: Consumer(builder: (context, ref, _) {
+                return InkWell(
+                  onTap: () {
+                    ref.read(logoutviewmodelProvider.notifier).signOut();
+                    navigatorKey.currentState!
+                        .pushNamed(RoutesName.welcomeView);
+                  },
+                  child: const Icon(
+                    Icons.exit_to_app,
+                    color: Color(0xff1a1a1a),
+                  ),
+                );
+              })),
         ],
       ),
     );

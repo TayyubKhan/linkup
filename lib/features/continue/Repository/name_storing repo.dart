@@ -16,4 +16,9 @@ class NameStoringRepo {
     final sp = await SharedPreferences.getInstance();
     return sp.containsKey('name');
   }
+
+  Future<bool> removeName() async {
+    final sp = await SharedPreferences.getInstance();
+    return sp.remove('name');
+  }
 }

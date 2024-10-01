@@ -1,193 +1,143 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart' as chat;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:math';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
+import '../../../Components/backicon.dart';
+import '../viewmodel/message_viewmodel.dart';
 
-import 'package:linkup/Components/backicon.dart';
+class ChatView extends ConsumerStatefulWidget {
+  final int chatId;
 
-class ChatView extends StatefulWidget {
-  const ChatView({super.key});
+  const ChatView({super.key, required this.chatId});
 
   @override
-  _ChatViewState createState() => _ChatViewState();
+  ConsumerState<ChatView> createState() => _ChatViewState();
 }
 
-class _ChatViewState extends State<ChatView> {
-  List<types.Message> _messages = [];
-  final _user = const types.User(id: 'user1'); // Your user ID
+class _ChatViewState extends ConsumerState<ChatView>
+    with AutomaticKeepAliveClientMixin {
+  final TextEditingController _controller = TextEditingController();
+  final AutoScrollController _scrollController = AutoScrollController();
+  final _user = const types.User(id: 'user1');
   bool isEmojiVisible = false;
-  TextEditingController _controller = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _messages = _generateMessages(); // Example messages
-  }
+  bool get wantKeepAlive => true; // Keep the state alive
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.sizeOf(context).height;
-    final width = MediaQuery.sizeOf(context).width;
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (v, b) {
-        setState(() {
-          isEmojiVisible = false;
-        });
-      },
-      child: Scaffold(
-        extendBodyBehindAppBar: false,
-        extendBody: false,
-        backgroundColor: const Color(0xffF7F7F7),
-        appBar: AppBar(
-          leading: const AppBackButton(),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(
-            'Atif',
-            style: Theme.of(context).textTheme.titleLarge,
+    super.build(context); // Call super to ensure the mixin works
+    final messageController =
+        ref.watch(messageViewModelProvider(widget.chatId));
+    return Scaffold(
+      extendBodyBehindAppBar: false,
+      extendBody: false,
+      backgroundColor: const Color(0xffF7F7F7),
+      appBar: AppBar(
+        leading: const AppBackButton(),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          'Atif',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Color(0xff1a1a1a)),
+            onPressed: () {},
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert, color: Color(0xff1a1a1a)),
-              onPressed: () {},
+        ],
+        scrolledUnderElevation: 0,
+      ),
+      body: messageController.when(
+        data: (messages) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Scroll to the bottom when new messages are added
+            if (_scrollController.hasClients) {
+              _scrollController
+                  .jumpTo(_scrollController.position.maxScrollExtent);
+            }
+          });
+          return chat.Chat(
+            messages: messages.reversed.toList(),
+            onSendPressed: _onSendPressed,
+            user: _user,
+            theme: const chat.DefaultChatTheme(
+              inputBackgroundColor: Color(0xff1a1a1a),
+              inputTextColor: Color(0xffF7F7F7),
             ),
-          ],
-          scrolledUnderElevation: 0,
-        ),
-        body: Stack(
-          children: [
-            Opacity(
-              opacity: 0.1,
-              child: Image(
-                  height: height,
-                  width: width,
-                  fit: BoxFit.cover,
-                  image: const AssetImage('assets/back.jpg')),
-            ),
-            Chat(
-              messages: _messages,
-              onSendPressed: _handleSendPressed,
-              user: _user,
-              theme: const DefaultChatTheme(
-                backgroundColor: Colors.transparent,
-                inputBackgroundColor: Color(0xff1a1a1a),
-                inputTextColor: Color(0xffF7F7F7),
-                primaryColor: Color(0xff1a1a1a),
-              ),
-              customBottomWidget: _buildInputArea(),
-            ),
-            isEmojiVisible ? _buildEmojiPicker() : Container(),
-          ],
-        ),
+            customBottomWidget: _buildInputArea(),
+            scrollController: _scrollController, // Assign the ScrollController
+            scrollPhysics:
+                const BouncingScrollPhysics(), // Adjust scroll physics
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) {
+          log('Error: $error');
+          log('StackTrace: $stackTrace');
+          return Center(child: Text('Error occurred: $error'));
+        },
       ),
     );
   }
 
-  List<types.Message> _generateMessages() {
-    return List.generate(10, (index) {
-      return types.TextMessage(
+  void _onSendPressed(types.PartialText partialText) {
+    final text = partialText.text;
+    if (text.isNotEmpty) {
+      final messageId = DateTime.now().millisecondsSinceEpoch.toString();
+      final message = types.TextMessage(
         author: _user,
-        id: Random().nextInt(100).toString(),
-        text: 'Message $index',
+        id: messageId,
+        text: text,
         createdAt: DateTime.now().millisecondsSinceEpoch,
       );
-    });
-  }
 
-  void _handleSendPressed(types.PartialText message) {
-    final textMessage = types.TextMessage(
-      author: _user,
-      id: Random().nextInt(100).toString(),
-      text: message.text,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-    );
-
-    setState(() {
-      _messages.insert(0, textMessage);
-    });
+      ref
+          .read(messageViewModelProvider(widget.chatId).notifier)
+          .addMessage(message, widget.chatId);
+      _controller.clear(); // Clear the input
+    }
   }
 
   Widget _buildInputArea() {
     return Container(
-      color: const Color(0xffF7F7F7),
+      color: const Color(0xff1a1a1a),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         children: [
-          // Emoji button
           IconButton(
-            icon:
-                const Icon(Icons.emoji_emotions_outlined, color: Color(0xff1a1a1a)),
-            onPressed: () {
-              setState(() {
-                isEmojiVisible = !isEmojiVisible;
-              });
-            },
-          ),
-          // File Picker button
-          IconButton(
-            icon: const Icon(Icons.attach_file, color: Color(0xff1a1a1a)),
-            onPressed: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles();
-              if (result != null) {
-                final pickedFile = result.files.first;
-              }
-            },
+            icon: Icon(isEmojiVisible ? Icons.keyboard : Icons.emoji_emotions),
+            onPressed: _toggleEmojiVisibility,
+            color: Colors.white,
           ),
           Expanded(
             child: TextField(
               controller: _controller,
-              style: const TextStyle(color: Color(0xffF7F7F7)),
               decoration: const InputDecoration(
                 hintText: 'Type a message',
                 hintStyle: TextStyle(color: Colors.grey),
                 border: InputBorder.none,
               ),
-              onTap: () {
-                setState(() {
-                  isEmojiVisible = false;
-                });
-              },
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.send, color: Color(0xff1a1a1a)),
-            onPressed: () {
-              if (_controller.text.isNotEmpty) {
-                _handleSendPressed(types.PartialText(text: _controller.text));
-                _controller.clear();
-              }
-            },
+            icon: const Icon(Icons.send),
+            onPressed: () =>
+                _onSendPressed(types.PartialText(text: _controller.text)),
+            color: Colors.white,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildEmojiPicker() {
-    return EmojiPicker(
-      onEmojiSelected: (category, emoji) {
-        _controller.text += emoji.emoji;
-      },
-      config: const Config(
-        emojiViewConfig: EmojiViewConfig(
-          emojiSizeMax: 32,
-          verticalSpacing: 0,
-          horizontalSpacing: 0,
-        ),
-        categoryViewConfig: CategoryViewConfig(
-          indicatorColor: Colors.blue,
-          iconColor: Colors.grey,
-          iconColorSelected: Colors.blue,
-        ),
-        skinToneConfig: SkinToneConfig(),
-        bottomActionBarConfig: BottomActionBarConfig(),
-        height: 256,
-        swapCategoryAndBottomBar: false,
-        checkPlatformCompatibility: true,
-      ),
-    );
+  void _toggleEmojiVisibility() {
+    setState(() {
+      isEmojiVisible = !isEmojiVisible;
+    });
   }
 }

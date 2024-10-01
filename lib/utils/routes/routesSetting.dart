@@ -9,6 +9,7 @@ import 'package:linkup/features/welcomeview/view/welcome_view.dart';
 import 'package:linkup/utils/routes/routesName.dart';
 
 import '../../features/password/view/password_view.dart';
+import '../../temp/screens/scan_screen.dart';
 
 class AppRoutesSetting {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -19,8 +20,11 @@ class AppRoutesSetting {
       case RoutesName.continueView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const ContinueView());
-      case RoutesName.chatView:
-        return MaterialPageRoute(builder: (BuildContext context) => ChatView());
+      case RoutesName.ChatModelView:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const ChatView(
+                  chatId: 0,
+                ));
       case RoutesName.settingView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SettingsView());
@@ -36,6 +40,9 @@ class AppRoutesSetting {
       case RoutesName.searchView:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SearchView());
+      case RoutesName.scanScreen:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const ScanScreen());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

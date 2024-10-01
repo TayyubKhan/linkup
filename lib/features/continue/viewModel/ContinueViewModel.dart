@@ -19,7 +19,6 @@ class ContinueViewModel extends _$ContinueViewModel {
     await nameRepo.setName(name);
     state = AsyncData(ContinueModel().copyWith(name: name)); // Update the state
   }
-
   Future<String> refreshName() async {
     String name = await nameRepo.getName();
     state = AsyncData(ContinueModel().copyWith(name: name)); // Update the state

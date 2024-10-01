@@ -1,27 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'setting_viewmodel.dart';
+part of 'home_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$notificationSwitchHash() =>
-    r'637c163c62f7414a26db1b8653b95ad154af69bd';
+String _$homeViewModelHash() => r'705e8451af6cabb8c35d18cdb252d0c1dc7fea70';
 
-/// See also [NotificationSwitch].
-@ProviderFor(NotificationSwitch)
-final notificationSwitchProvider =
-    AutoDisposeAsyncNotifierProvider<NotificationSwitch, bool>.internal(
-  NotificationSwitch.new,
-  name: r'notificationSwitchProvider',
+/// See also [HomeViewModel].
+@ProviderFor(HomeViewModel)
+final homeViewModelProvider =
+    AutoDisposeAsyncNotifierProvider<HomeViewModel, List<Chat>>.internal(
+  HomeViewModel.new,
+  name: r'homeViewModelProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$notificationSwitchHash,
+      : _$homeViewModelHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$NotificationSwitch = AutoDisposeAsyncNotifier<bool>;
+typedef _$HomeViewModel = AutoDisposeAsyncNotifier<List<Chat>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -29,7 +29,11 @@ mixin _$MessageModel {
       throw _privateConstructorUsedError; // Name of the sender
   DateTime get timestamp =>
       throw _privateConstructorUsedError; // Time when the message was sent
-  bool get isSender => throw _privateConstructorUsedError;
+  bool get isSender =>
+      throw _privateConstructorUsedError; // Whether the message is from the local user
+  bool get isDocument =>
+      throw _privateConstructorUsedError; // Whether the message is from the local user
+  bool get isSent => throw _privateConstructorUsedError;
 
   /// Serializes this MessageModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -53,7 +57,9 @@ abstract class $MessageModelCopyWith<$Res> {
       String senderId,
       String senderName,
       DateTime timestamp,
-      bool isSender});
+      bool isSender,
+      bool isDocument,
+      bool isSent});
 }
 
 /// @nodoc
@@ -77,6 +83,8 @@ class _$MessageModelCopyWithImpl<$Res, $Val extends MessageModel>
     Object? senderName = null,
     Object? timestamp = null,
     Object? isSender = null,
+    Object? isDocument = null,
+    Object? isSent = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -103,6 +111,14 @@ class _$MessageModelCopyWithImpl<$Res, $Val extends MessageModel>
           ? _value.isSender
           : isSender // ignore: cast_nullable_to_non_nullable
               as bool,
+      isDocument: null == isDocument
+          ? _value.isDocument
+          : isDocument // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSent: null == isSent
+          ? _value.isSent
+          : isSent // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -121,7 +137,9 @@ abstract class _$$MessageModelImplCopyWith<$Res>
       String senderId,
       String senderName,
       DateTime timestamp,
-      bool isSender});
+      bool isSender,
+      bool isDocument,
+      bool isSent});
 }
 
 /// @nodoc
@@ -143,6 +161,8 @@ class __$$MessageModelImplCopyWithImpl<$Res>
     Object? senderName = null,
     Object? timestamp = null,
     Object? isSender = null,
+    Object? isDocument = null,
+    Object? isSent = null,
   }) {
     return _then(_$MessageModelImpl(
       id: null == id
@@ -169,6 +189,14 @@ class __$$MessageModelImplCopyWithImpl<$Res>
           ? _value.isSender
           : isSender // ignore: cast_nullable_to_non_nullable
               as bool,
+      isDocument: null == isDocument
+          ? _value.isDocument
+          : isDocument // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSent: null == isSent
+          ? _value.isSent
+          : isSent // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -182,7 +210,9 @@ class _$MessageModelImpl implements _MessageModel {
       required this.senderId,
       required this.senderName,
       required this.timestamp,
-      required this.isSender});
+      required this.isSender,
+      required this.isDocument,
+      required this.isSent});
 
   factory _$MessageModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$MessageModelImplFromJson(json);
@@ -204,10 +234,16 @@ class _$MessageModelImpl implements _MessageModel {
 // Time when the message was sent
   @override
   final bool isSender;
+// Whether the message is from the local user
+  @override
+  final bool isDocument;
+// Whether the message is from the local user
+  @override
+  final bool isSent;
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, text: $text, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, isSender: $isSender)';
+    return 'MessageModel(id: $id, text: $text, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, isSender: $isSender, isDocument: $isDocument, isSent: $isSent)';
   }
 
   @override
@@ -224,13 +260,16 @@ class _$MessageModelImpl implements _MessageModel {
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.isSender, isSender) ||
-                other.isSender == isSender));
+                other.isSender == isSender) &&
+            (identical(other.isDocument, isDocument) ||
+                other.isDocument == isDocument) &&
+            (identical(other.isSent, isSent) || other.isSent == isSent));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, text, senderId, senderName, timestamp, isSender);
+  int get hashCode => Object.hash(runtimeType, id, text, senderId, senderName,
+      timestamp, isSender, isDocument, isSent);
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -255,7 +294,9 @@ abstract class _MessageModel implements MessageModel {
       required final String senderId,
       required final String senderName,
       required final DateTime timestamp,
-      required final bool isSender}) = _$MessageModelImpl;
+      required final bool isSender,
+      required final bool isDocument,
+      required final bool isSent}) = _$MessageModelImpl;
 
   factory _MessageModel.fromJson(Map<String, dynamic> json) =
       _$MessageModelImpl.fromJson;
@@ -271,7 +312,11 @@ abstract class _MessageModel implements MessageModel {
   @override
   DateTime get timestamp; // Time when the message was sent
   @override
-  bool get isSender;
+  bool get isSender; // Whether the message is from the local user
+  @override
+  bool get isDocument; // Whether the message is from the local user
+  @override
+  bool get isSent;
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.

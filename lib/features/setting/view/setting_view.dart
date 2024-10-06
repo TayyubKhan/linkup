@@ -8,10 +8,11 @@ import 'package:linkup/main.dart';
 import 'package:linkup/utils/routes/routesName.dart';
 
 import '../../../Components/backicon.dart';
+import '../../../utils/colors.dart';
 import '../../continue/viewModel/ContinueViewModel.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({super.key});
+   SettingsView({super.key});
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -22,7 +23,7 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const AppBackButton(),
+        leading:  AppBackButton(),
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Text(
@@ -69,8 +70,8 @@ class _SettingsViewState extends State<SettingsView> {
                             .changeNotification();
                       }),
                   AsyncError() =>
-                    const Text('Oops, something unexpected happened'),
-                  _ => const CircularProgressIndicator(),
+                     Text('Oops, something unexpected happened'),
+                  _ =>  CircularProgressIndicator(),
                 };
               },
             ),
@@ -91,9 +92,9 @@ class _SettingsViewState extends State<SettingsView> {
                     navigatorKey.currentState!
                         .pushNamed(RoutesName.welcomeView);
                   },
-                  child: const Icon(
+                  child:  Icon(
                     Icons.exit_to_app,
-                    color: Color(0xff1a1a1a),
+                    color: primaryBlack,
                   ),
                 );
               })),

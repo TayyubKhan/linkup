@@ -57,11 +57,11 @@ class _NearbyCommunicationScreenState extends State<NearbyCommunicationScreen> {
         onConnectionInitiated: (String id, ConnectionInfo info) {
           Nearby().acceptConnection(id,
               onPayLoadRecieved: (String endpointId, Payload payload) {
-                String receivedMessage = String.fromCharCodes(payload.bytes!);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Received message: $receivedMessage")),
-                );
-              });
+            String receivedMessage = String.fromCharCodes(payload.bytes!);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Received message: $receivedMessage")),
+            );
+          });
 
           setState(() {
             connectedDevices.add(id);
@@ -189,11 +189,11 @@ class _NearbyCommunicationScreenState extends State<NearbyCommunicationScreen> {
       onConnectionInitiated: (String id, ConnectionInfo info) {
         Nearby().acceptConnection(id,
             onPayLoadRecieved: (String endpointId, Payload payload) {
-              String receivedMessage = String.fromCharCodes(payload.bytes!);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Received message: $receivedMessage")),
-              );
-            });
+          String receivedMessage = String.fromCharCodes(payload.bytes!);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Received message: $receivedMessage")),
+          );
+        });
 
         setState(() {
           connectedEndpointId = id;
@@ -236,12 +236,12 @@ class DiscoveredDevice {
   DiscoveredDevice({required this.id, required this.name});
 }
 
-
 class MessagingScreen extends StatelessWidget {
   final String deviceId;
   final Function(String) sendMessage; // Function to send message
 
-  MessagingScreen({required this.deviceId, required this.sendMessage});
+  const MessagingScreen(
+      {super.key, required this.deviceId, required this.sendMessage});
 
   @override
   Widget build(BuildContext context) {

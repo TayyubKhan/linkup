@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
 import '../model/chat_model.dart';
+import '../model/message_model/message_model.dart';
 
 final chatDatabaseProvider = Provider<ChatDatabase>((ref) {
   return ChatDatabase();
@@ -38,51 +37,104 @@ class ChatDatabase {
     );
   }
 
+  Future<int?> getChatIdByName(String name) async {
+    final db = await database;
+    final result = await db.query(
+      _chatTable,
+      where: 'chatName = ?',
+      whereArgs: [name],
+    );
+    if (result.isNotEmpty) {
+      return result.first['id'] as int; // Return chatId if found
+    } else {
+      return null; // Return null if not found
+    }
+  }
+
   // Create tables for Chat and Message
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $_chatTable (
         id INTEGER PRIMARY KEY,
         chatName TEXT NOT NULL,
-        createdAt TEXT NOT NULL
+        createdAt TEXT NOT NULL,
+        deviceId TEXT NOT NULL
       )
     ''');
 
     await db.execute('''
-  CREATE TABLE $_messageTable (
-    id TEXT PRIMARY KEY,             -- Message ID (string or timestamp)
-    chatId INTEGER NOT NULL,         -- Foreign key to the related chat
-    author TEXT NOT NULL,            -- ID of the author (user ID)
-    text TEXT,                       -- Text content of the message
-    type TEXT NOT NULL,              -- Message type (e.g., 'text')
-    createdAt INTEGER NOT NULL,      -- Timestamp of message creation in milliseconds
-    FOREIGN KEY (chatId) REFERENCES $_chatTable (id) ON DELETE CASCADE  -- Reference to chat table
-  )
-''');
+      CREATE TABLE $_messageTable (
+        id TEXT PRIMARY KEY,             -- Message ID (string or timestamp)
+        chatId INTEGER NOT NULL,         -- Foreign key to the related chat
+        text TEXT,                       -- Text content of the message
+        senderId TEXT NOT NULL,          -- ID of the sender
+        senderName TEXT NOT NULL,        -- Name of the sender
+        isSender INTEGER NOT NULL,       -- Whether the message is from the local user (bool converted to int)
+        isDocument INTEGER NOT NULL,     -- Whether the message is a document (bool converted to int)
+        isSent INTEGER NOT NULL,     -- Whether the message is a document (bool converted to int)
+        timestamp INTEGER NOT NULL,      -- Timestamp of message creation in milliseconds
+        FOREIGN KEY (chatId) REFERENCES $_chatTable (id) ON DELETE CASCADE  -- Reference to chat table
+      )
+    ''');
+  }
+  Future<List<Map<String, dynamic>>> fetchUnsentMessages( String chatName) async {
+    // Query the database for unsent messages with isSent = 0
+    final db = await database;
+    return await db.query(
+      'messages',
+      where: 'chatName = ? AND isSent = ?',
+      whereArgs: [chatName, 0],
+    );
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // Handle database upgrades if needed in the future
   }
 
-  // Insert a new chat
+// Insert a new chat or return the existing chat's ID
   Future<int> insertChat(Chat chat) async {
     final db = await database;
-    return await db.insert(
+
+    // Step 1: Check if chat with the same chatName already exists
+    final existingChat = await db.query(
+      _chatTable,
+      where: 'chatName = ?',
+      whereArgs: [chat.chatName],
+      limit: 1, // Only fetch one matching chat
+    );
+
+    // Step 2: If the chat exists, return its ID
+    if (existingChat.isNotEmpty) {
+      return existingChat.first['id'] as int;
+    }
+
+    // Step 3: If the chat doesn't exist, insert a new chat and return the new chat ID
+    final newChatId = await db.insert(
       _chatTable,
       chat.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    return newChatId;
   }
 
   // Insert a new message
-  Future<int> insertMessage(Message message, int chatId) async {
+  Future<int> insertMessage(MessageModel message, int chatId) async {
     final db = await database;
     return await db.insert(
       _messageTable,
       {
-        ...message.toJson(), // Include the rest of the message details
-        'chatId': chatId, // Add chatId to the message
+        'id': message.id,
+        'chatId': chatId,
+        'text': message.text,
+        'senderId': message.senderId,
+        'senderName': message.senderName,
+        'isSender': message.isSender ? 1 : 0, // Convert bool to int (1 or 0)
+        'isDocument':
+            message.isDocument ? 1 : 0, // Convert bool to int (1 or 0)
+        'isSent': message.isSent ? 1 : 0,
+        'timestamp': message.timestamp
+            .millisecondsSinceEpoch, // Store timestamp as milliseconds
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -95,7 +147,8 @@ class ChatDatabase {
     return chats.map((json) => Chat.fromJson(json)).toList();
   }
 
-  Future<List<Message>> fetchMessagesByChatId(int chatId) async {
+  // Fetch messages by chat ID
+  Future<List<MessageModel>> fetchMessagesByChatId(int chatId) async {
     final db = await database;
     final messages = await db.query(
       _messageTable,
@@ -103,30 +156,25 @@ class ChatDatabase {
       whereArgs: [chatId],
     );
 
-    // Create a new list of messages
     return messages.map((message) {
-      // Create a new Map from the existing message to avoid modifying the read-only result
-      final Map<String, dynamic> messageMap = Map<String, dynamic>.from(message);
+      final Map<String, dynamic> messageMap =
+          Map<String, dynamic>.from(message);
 
-      // Parse the 'author' field, which is stored as a string
-      String authorString = messageMap['author'] as String;
-
-      // Convert the authorString into a Map
-      final authorMap = _parseAuthorString(authorString);
-
-      // Set the 'author' field to the newly parsed Map
-      messageMap['author'] = authorMap;
-
-      // Return the Message object using the updated map
-      return Message.fromJson(messageMap);
+      // Convert integer fields back to boolean
+      return MessageModel(
+        id: messageMap['id'],
+        text: messageMap['text'],
+        senderId: messageMap['senderId'],
+        senderName: messageMap['senderName'],
+        isSender: messageMap['isSender'] ==
+            1, // Convert int to bool (1 -> true, 0 -> false)
+        isDocument: messageMap['isDocument'] ==
+            1, // Convert int to bool (1 -> true, 0 -> false)
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+            messageMap['timestamp']), isSent: messageMap['isSent'] ==
+          1// Convert back to DateTime
+      );
     }).toList();
-  }
-
-// Helper function to parse the author string into a Map<String, dynamic>
-  Map<String, dynamic> _parseAuthorString(String authorString) {
-    // Example implementation to convert a string "{id=user1}" into a Map
-    final userId = authorString.replaceAll(RegExp(r'[{}id=]'), '');
-    return {'id': userId};
   }
 
   // Update a chat
@@ -141,16 +189,40 @@ class ChatDatabase {
   }
 
   // Update a message
-  Future<int> updateMessage(Message message) async {
+  Future<int> updateMessage(MessageModel message) async {
     final db = await database;
     return await db.update(
       _messageTable,
-      message.toJson(),
+      {
+        'id': message.id,
+        'text': message.text,
+        'senderId': message.senderId,
+        'senderName': message.senderName,
+        'isSender': message.isSender ? 1 : 0, // Convert bool to int (1 or 0)
+        'isDocument':
+            message.isDocument ? 1 : 0, // Convert bool to int (1 or 0)
+        'timestamp': message.timestamp
+            .millisecondsSinceEpoch, // Store timestamp as milliseconds
+      'isSent':  message.isSent ? 1 : 0, // Store timestamp as milliseconds
+      },
       where: 'id = ?',
       whereArgs: [message.id],
     );
   }
+// Update message status (e.g., isSent)
+  Future<int> updateMessageStatus(String messageId, bool isSent) async {
+    final db = await database;
 
+    // Update the isSent status of a message based on the message ID
+    return await db.update(
+      _messageTable,
+      {
+        'isSent': isSent ? 1 : 0, // Convert bool to int (1 or 0)
+      },
+      where: 'id = ?',
+      whereArgs: [messageId],
+    );
+  }
   // Delete a chat (deletes all related messages due to cascade)
   Future<int> deleteChat(int chatId) async {
     final db = await database;
@@ -162,7 +234,7 @@ class ChatDatabase {
   }
 
   // Delete a message
-  Future<int> deleteMessage(int messageId) async {
+  Future<int> deleteMessage(String messageId) async {
     final db = await database;
     return await db.delete(
       _messageTable,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/colors.dart';
 
 class SettingListTile extends StatelessWidget {
   String title;
@@ -10,7 +11,7 @@ class SettingListTile extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: const TextStyle(fontFamily: 'pop', fontWeight: FontWeight.w800),
+        style: TextStyle(fontFamily: 'pop', fontWeight: FontWeight.w800),
       ),
       trailing: widget,
     );

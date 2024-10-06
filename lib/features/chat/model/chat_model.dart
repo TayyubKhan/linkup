@@ -5,10 +5,11 @@ part 'chat_model.g.dart';
 
 @freezed
 class Chat with _$Chat {
-  const factory Chat({
+   factory Chat({
     required int id,
     required String chatName,
     required DateTime createdAt,
+    required String deviceId,
   }) = _Chat;
 
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);

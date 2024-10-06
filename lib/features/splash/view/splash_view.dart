@@ -9,7 +9,7 @@ import 'package:linkup/utils/routes/routesName.dart'; // Import for Riverpod
 
 class SplashView extends ConsumerStatefulWidget {
   // Changed to ConsumerStatefulWidget
-  const SplashView({super.key});
+   SplashView({super.key});
 
   @override
   _SplashViewState createState() => _SplashViewState();
@@ -20,7 +20,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () {
+    Timer( Duration(seconds: 2), () {
       _check();
     });
   }
@@ -40,7 +40,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
     final width = MediaQuery.sizeOf(context).width;
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding:  EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -51,7 +51,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
               ),
             ),
             Gap(height * 0.02),
-            const Image(image: AssetImage("assets/welcome.png")),
+             Image(image: AssetImage("assets/welcome.png")),
           ],
         ),
       ),

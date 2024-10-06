@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/colors.dart';
+
 class AppBackButton extends StatelessWidget {
   const AppBackButton({super.key});
 
@@ -9,7 +11,7 @@ class AppBackButton extends StatelessWidget {
       onPressed: () {
         Navigator.pop(context);
       },
-      color: Color(0xff1a1a1a),
+      color: primaryBlack,
     );
   }
 }

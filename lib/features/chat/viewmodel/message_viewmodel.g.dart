@@ -6,7 +6,7 @@ part of 'message_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$messageViewModelHash() => r'fa373a71b354ec9e611f73cbc2bd586d266f3e98';
+String _$messageViewModelHash() => r'754ae5ad0cba4ab52453c9d99a7a7f85ce5ed872';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,10 +30,10 @@ class _SystemHash {
 }
 
 abstract class _$MessageViewModel
-    extends BuildlessAutoDisposeAsyncNotifier<List<Message>> {
+    extends BuildlessAutoDisposeAsyncNotifier<List<MessageModel>> {
   late final int chatId;
 
-  FutureOr<List<Message>> build(
+  FutureOr<List<MessageModel>> build(
     int chatId,
   );
 }
@@ -43,7 +43,7 @@ abstract class _$MessageViewModel
 const messageViewModelProvider = MessageViewModelFamily();
 
 /// See also [MessageViewModel].
-class MessageViewModelFamily extends Family<AsyncValue<List<Message>>> {
+class MessageViewModelFamily extends Family<AsyncValue<List<MessageModel>>> {
   /// See also [MessageViewModel].
   const MessageViewModelFamily();
 
@@ -82,7 +82,7 @@ class MessageViewModelFamily extends Family<AsyncValue<List<Message>>> {
 
 /// See also [MessageViewModel].
 class MessageViewModelProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    MessageViewModel, List<Message>> {
+    MessageViewModel, List<MessageModel>> {
   /// See also [MessageViewModel].
   MessageViewModelProvider(
     int chatId,
@@ -113,7 +113,7 @@ class MessageViewModelProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final int chatId;
 
   @override
-  FutureOr<List<Message>> runNotifierBuild(
+  FutureOr<List<MessageModel>> runNotifierBuild(
     covariant MessageViewModel notifier,
   ) {
     return notifier.build(
@@ -138,7 +138,7 @@ class MessageViewModelProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<MessageViewModel, List<Message>>
+  AutoDisposeAsyncNotifierProviderElement<MessageViewModel, List<MessageModel>>
       createElement() {
     return _MessageViewModelProviderElement(this);
   }
@@ -158,14 +158,14 @@ class MessageViewModelProvider extends AutoDisposeAsyncNotifierProviderImpl<
 }
 
 mixin MessageViewModelRef
-    on AutoDisposeAsyncNotifierProviderRef<List<Message>> {
+    on AutoDisposeAsyncNotifierProviderRef<List<MessageModel>> {
   /// The parameter `chatId` of this provider.
   int get chatId;
 }
 
 class _MessageViewModelProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<MessageViewModel,
-        List<Message>> with MessageViewModelRef {
+        List<MessageModel>> with MessageViewModelRef {
   _MessageViewModelProviderElement(super.provider);
 
   @override

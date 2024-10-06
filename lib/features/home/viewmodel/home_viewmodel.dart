@@ -24,13 +24,15 @@ class HomeViewModel extends _$HomeViewModel {
   }
 
   // Add a new chat and reload chats
-  Future<void> addChat(Chat chat) async {
-    // Use AsyncValue.guard to reload chats after adding
+  Future<int?> addChat(Chat chat) async {
+    int? chatId; // Declare chatId as nullable
     state = await AsyncValue.guard(() async {
-      await _chatDatabase.insertChat(chat);
+      chatId = await _chatDatabase.insertChat(chat);
       return loadChats(); // return the updated list of chats
     });
+    return chatId; // Return nullable int
   }
+
 
   // Delete a chat and reload chats
   Future<void> deleteChat(int chatId) async {

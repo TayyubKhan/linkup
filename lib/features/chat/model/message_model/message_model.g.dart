@@ -14,6 +14,8 @@ _$MessageModelImpl _$$MessageModelImplFromJson(Map<String, dynamic> json) =>
       senderName: json['senderName'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
       isSender: json['isSender'] as bool,
+      isDocument: json['isDocument'] as bool,
+      isSent: json['isSent'] as bool,
     );
 
 Map<String, dynamic> _$$MessageModelImplToJson(_$MessageModelImpl instance) =>
@@ -24,4 +26,6 @@ Map<String, dynamic> _$$MessageModelImplToJson(_$MessageModelImpl instance) =>
       'senderName': instance.senderName,
       'timestamp': instance.timestamp.toIso8601String(),
       'isSender': instance.isSender,
+      'isDocument': instance.isDocument,
+      'isSent': instance.isSent,
     };

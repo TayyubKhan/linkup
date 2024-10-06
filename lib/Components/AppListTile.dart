@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../utils/colors.dart';
 
 class AppListTile extends StatelessWidget {
   String title;
@@ -26,13 +27,13 @@ class AppListTile extends StatelessWidget {
       onTap: onTap,
       title: Text(
         title,
-        style: const TextStyle(fontFamily: 'pop', fontWeight: FontWeight.w800),
+        style:  TextStyle(fontFamily: 'pop', fontWeight: FontWeight.w800),
       ),
-      leading: const CircleAvatar(
-          backgroundColor: Color(0xff1a1a1a),
+      leading:  CircleAvatar(
+          backgroundColor: primaryBlack,
           child: Icon(
             Icons.person,
-            color: Color(0xffF7F7F7),
+            color: primaryWhite,
           )),
       subtitle: Text(
         message,
@@ -43,18 +44,18 @@ class AppListTile extends StatelessWidget {
         children: [
           Text(
             time,
-            style: const TextStyle(fontFamily: 'pop', fontSize: 11),
+            style:  TextStyle(fontFamily: 'pop', fontSize: 11),
           ),
           isOnline
               ? Container(
                   width: height * 0.01,
                   height: height * 0.01,
                   decoration: BoxDecoration(
-                      border: Border.all(width: 0.18, color: Color(0xff1a1a1a)),
+                      border: Border.all(width: 0.18, color: primaryBlack),
                       shape: BoxShape.circle,
                       color: Colors.green),
                 )
-              : const SizedBox()
+              :  SizedBox()
         ],
       ),
     );

@@ -7,12 +7,12 @@ part of 'nearby_communication_service.dart';
 // **************************************************************************
 
 String _$nearbyCommunicationServiceHash() =>
-    r'9965d266186cd950bf8d8b2d45b83ae63596da9c';
+    r'20f28493438d2f00c426a441c9b1d99209ab7e9e';
 
 /// See also [NearbyCommunicationService].
 @ProviderFor(NearbyCommunicationService)
-final nearbyCommunicationServiceProvider =
-    AutoDisposeNotifierProvider<NearbyCommunicationService, void>.internal(
+final nearbyCommunicationServiceProvider = AutoDisposeAsyncNotifierProvider<
+    NearbyCommunicationService, List<DiscoveredDevice>>.internal(
   NearbyCommunicationService.new,
   name: r'nearbyCommunicationServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,7 @@ final nearbyCommunicationServiceProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$NearbyCommunicationService = AutoDisposeNotifier<void>;
+typedef _$NearbyCommunicationService
+    = AutoDisposeAsyncNotifier<List<DiscoveredDevice>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

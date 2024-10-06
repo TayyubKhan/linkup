@@ -23,6 +23,7 @@ mixin _$Chat {
   int get id => throw _privateConstructorUsedError;
   String get chatName => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  String get deviceId => throw _privateConstructorUsedError;
 
   /// Serializes this Chat to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,7 +39,7 @@ abstract class $ChatCopyWith<$Res> {
   factory $ChatCopyWith(Chat value, $Res Function(Chat) then) =
       _$ChatCopyWithImpl<$Res, Chat>;
   @useResult
-  $Res call({int id, String chatName, DateTime createdAt});
+  $Res call({int id, String chatName, DateTime createdAt, String deviceId});
 }
 
 /// @nodoc
@@ -59,6 +60,7 @@ class _$ChatCopyWithImpl<$Res, $Val extends Chat>
     Object? id = null,
     Object? chatName = null,
     Object? createdAt = null,
+    Object? deviceId = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -73,6 +75,10 @@ class _$ChatCopyWithImpl<$Res, $Val extends Chat>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -84,7 +90,7 @@ abstract class _$$ChatImplCopyWith<$Res> implements $ChatCopyWith<$Res> {
       __$$ChatImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String chatName, DateTime createdAt});
+  $Res call({int id, String chatName, DateTime createdAt, String deviceId});
 }
 
 /// @nodoc
@@ -102,6 +108,7 @@ class __$$ChatImplCopyWithImpl<$Res>
     Object? id = null,
     Object? chatName = null,
     Object? createdAt = null,
+    Object? deviceId = null,
   }) {
     return _then(_$ChatImpl(
       id: null == id
@@ -116,6 +123,10 @@ class __$$ChatImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -123,8 +134,11 @@ class __$$ChatImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ChatImpl implements _Chat {
-  const _$ChatImpl(
-      {required this.id, required this.chatName, required this.createdAt});
+  _$ChatImpl(
+      {required this.id,
+      required this.chatName,
+      required this.createdAt,
+      required this.deviceId});
 
   factory _$ChatImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatImplFromJson(json);
@@ -135,10 +149,12 @@ class _$ChatImpl implements _Chat {
   final String chatName;
   @override
   final DateTime createdAt;
+  @override
+  final String deviceId;
 
   @override
   String toString() {
-    return 'Chat(id: $id, chatName: $chatName, createdAt: $createdAt)';
+    return 'Chat(id: $id, chatName: $chatName, createdAt: $createdAt, deviceId: $deviceId)';
   }
 
   @override
@@ -150,12 +166,15 @@ class _$ChatImpl implements _Chat {
             (identical(other.chatName, chatName) ||
                 other.chatName == chatName) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, chatName, createdAt);
+  int get hashCode =>
+      Object.hash(runtimeType, id, chatName, createdAt, deviceId);
 
   /// Create a copy of Chat
   /// with the given fields replaced by the non-null parameter values.
@@ -174,10 +193,11 @@ class _$ChatImpl implements _Chat {
 }
 
 abstract class _Chat implements Chat {
-  const factory _Chat(
+  factory _Chat(
       {required final int id,
       required final String chatName,
-      required final DateTime createdAt}) = _$ChatImpl;
+      required final DateTime createdAt,
+      required final String deviceId}) = _$ChatImpl;
 
   factory _Chat.fromJson(Map<String, dynamic> json) = _$ChatImpl.fromJson;
 
@@ -187,6 +207,8 @@ abstract class _Chat implements Chat {
   String get chatName;
   @override
   DateTime get createdAt;
+  @override
+  String get deviceId;
 
   /// Create a copy of Chat
   /// with the given fields replaced by the non-null parameter values.

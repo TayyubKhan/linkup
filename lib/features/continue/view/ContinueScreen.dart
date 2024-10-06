@@ -3,9 +3,10 @@ import 'package:linkup/Components/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:linkup/features/continue/viewModel/ContinueViewModel.dart';
-import 'package:linkup/utils/Utils.dart';
+import 'package:linkup/main.dart';
+import 'package:linkup/utils/routes/routesName.dart';
 
-import '../../../utils/routes/routesName.dart';
+import '../../../temporary/temp.dart';
 
 class ContinueView extends StatefulWidget {
   const ContinueView({super.key});
@@ -21,7 +22,6 @@ class _ContinueViewState extends State<ContinueView> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
-    final width = MediaQuery.sizeOf(context).width;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -63,7 +63,8 @@ class _ContinueViewState extends State<ContinueView> {
                               ref
                                   .read(continueViewModelProvider.notifier)
                                   .setName(nameController.text.toString());
-                              Navigator.pushNamed(context, RoutesName.homeView);
+                              navigatorKey.currentState!
+                                  .pushNamed(RoutesName.homeView);
                             }
                           },
                           title: "Continue",
@@ -71,7 +72,8 @@ class _ContinueViewState extends State<ContinueView> {
                       },
                     ),
                   ],
-                )),
+                )
+            )
           ],
         ),
       ),

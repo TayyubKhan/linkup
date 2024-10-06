@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.linkup" // Ensure this matches your namespace
-        minSdk = 29
+        minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

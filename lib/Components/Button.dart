@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../utils/colors.dart';
 
 class AppButton extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
 
-  const AppButton({super.key, this.title='', this.onTap});
+   AppButton({super.key, this.title='', this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class AppButton extends StatelessWidget {
         height: height * 0.07,
         width: width * .4,
         decoration: BoxDecoration(
-            color: Color(0xff1a1a1a), borderRadius: BorderRadius.circular(35)),
+            color: primaryBlack, borderRadius: BorderRadius.circular(35)),
         child: Center(
           child: Text(
             title,

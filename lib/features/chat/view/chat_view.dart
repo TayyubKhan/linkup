@@ -158,7 +158,7 @@ class _ChatViewState extends ConsumerState<ChatView>
                         children: [
                           if (!isSender)
                             Text(
-                              message.senderName,
+                              widget.name,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14.0,

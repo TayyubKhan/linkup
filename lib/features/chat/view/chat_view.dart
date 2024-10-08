@@ -6,10 +6,13 @@ import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart'; // Importing file_picker
 import 'package:linkup/features/chat/model/message_model/message_model.dart';
 import 'package:linkup/features/continue/viewModel/ContinueViewModel.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../Components/backicon.dart';
 import '../../../utils/colors.dart';
 import '../viewmodel/message_viewmodel.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path/path.dart' as path;
 
 class ChatView extends ConsumerStatefulWidget {
   final String name;
@@ -122,8 +125,12 @@ class _ChatViewState extends ConsumerState<ChatView>
                 ],
                 Flexible(
                   child: InkWell(
-                    onTap: () {
-                      print(message.isSent);
+                    onTap: () async {
+                      final tempPath =
+                          (await getExternalStorageDirectory())!.absolute.path;
+                      message.isDocument
+                          ? openOtherTypeFile('$tempPath/${message.text}')
+                          : null;
                     },
                     child: Container(
                       padding: const EdgeInsets.all(12.0),
@@ -143,13 +150,6 @@ class _ChatViewState extends ConsumerState<ChatView>
                                 topRight: Radius.circular(12.0),
                                 bottomRight: Radius.circular(12.0),
                               ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: primaryBlack,
-                            offset: const Offset(0, 2),
-                            blurRadius: 4.0,
-                          ),
-                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: isSender
@@ -318,7 +318,6 @@ class _ChatViewState extends ConsumerState<ChatView>
     if (_selectedFile != null) {
       // If a file is selected, send the file
       _sendFile();
-      _selectedFile = null;
     } else {
       // Otherwise, send the text message
       final text = _textController.text.trim();
@@ -355,7 +354,7 @@ class _ChatViewState extends ConsumerState<ChatView>
 
         if (fileSize <= 5 * 1024 * 1024) {
           // Check if file size is less than 5 MB
-          temp(file);
+          temp(file.path!);
           // After sending the file, reset the selected file variable
         } else {
           // Handle file size error (e.g., show an error message)
@@ -367,23 +366,68 @@ class _ChatViewState extends ConsumerState<ChatView>
     }
   }
 
-  void temp(file) async {
+  void temp(String file) async {
     final name = await ref.watch(continueViewModelProvider.future);
     final messageId = DateTime.now().millisecondsSinceEpoch.toString();
     final message = MessageModel(
       id: messageId,
-      text: file.path!, // Display the file name as the message text
+      text: file, // Display the file name as the message text
       senderId: widget.deviceId,
       senderName: name.name!,
       timestamp: DateTime.now(),
       isSender: true,
       isDocument: true, isSent: false,
     );
-    widget.sendMessage(_selectedFile!.path!, messageId, true);
-
+    widget.sendMessage(file, messageId, true);
     // Save the file message in SQLite and send the file via Bluetooth
     ref
         .read(messageViewModelProvider(widget.chatId).notifier)
         .addMessage(message, widget.chatId);
+    setState(() {
+      _selectedFile = null;
+    });
   }
+}
+
+openOtherTypeFile(filePath) async {
+  var types = {
+    ".pdf": "application/pdf",
+    ".dwg": "application/x-autocad",
+    ".doc": "application/msword",
+    ".docx":
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".xls": "application/vnd.ms-excel",
+    ".xlsx":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".pptx":
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".txt": "text/plain",
+    ".csv": "text/csv",
+    ".zip": "application/zip",
+    ".rar": "application/x-rar-compressed",
+    ".tar": "application/x-tar",
+    ".7z": "application/x-7z-compressed",
+    ".mp3": "audio/mpeg",
+    ".wav": "audio/x-wav",
+    ".mp4": "video/mp4",
+    ".mkv": "video/x-matroska",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".gif": "image/gif",
+    ".bmp": "image/bmp",
+    ".svg": "image/svg+xml",
+    ".apk": "application/vnd.android.package-archive",
+    ".exe": "application/x-msdownload",
+    ".iso": "application/x-iso9660-image",
+    ".html": "text/html",
+    ".css": "text/css",
+    ".js": "application/javascript",
+    ".json": "application/json",
+    ".xml": "application/xml"
+  };
+  final extension =
+      path.extension(filePath); //import 'package:path/path.dart' as path;
+  await OpenFile.open(filePath, type: types[extension]);
 }

@@ -77,16 +77,20 @@ class ChatDatabase {
       )
     ''');
   }
-  Future<List<Map<String, dynamic>>> fetchUnsentMessages( String chatName) async {
-    // Query the database for unsent messages with isSent = 0
-    final db = await database;
-    return await db.query(
-      'messages',
-      where: 'chatName = ? AND isSent = ?',
-      whereArgs: [chatName, 0],
-    );
-  }
 
+  Future<List<Map<String, dynamic>>> fetchUnsentMessages(
+      String chatName) async {
+    final db = await database;
+
+    // Query to fetch unsent messages with isSent = 0 and the given chatName
+    return await db.rawQuery('''
+    SELECT messages.* 
+    FROM $_messageTable AS messages
+    INNER JOIN $_chatTable AS chats
+    ON messages.chatId = chats.id
+    WHERE chats.chatName = ? AND messages.isSent = ?
+  ''', [chatName, 0]);
+  }
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // Handle database upgrades if needed in the future
   }
@@ -107,7 +111,6 @@ class ChatDatabase {
     if (existingChat.isNotEmpty) {
       return existingChat.first['id'] as int;
     }
-
     // Step 3: If the chat doesn't exist, insert a new chat and return the new chat ID
     final newChatId = await db.insert(
       _chatTable,
@@ -162,18 +165,18 @@ class ChatDatabase {
 
       // Convert integer fields back to boolean
       return MessageModel(
-        id: messageMap['id'],
-        text: messageMap['text'],
-        senderId: messageMap['senderId'],
-        senderName: messageMap['senderName'],
-        isSender: messageMap['isSender'] ==
-            1, // Convert int to bool (1 -> true, 0 -> false)
-        isDocument: messageMap['isDocument'] ==
-            1, // Convert int to bool (1 -> true, 0 -> false)
-        timestamp: DateTime.fromMillisecondsSinceEpoch(
-            messageMap['timestamp']), isSent: messageMap['isSent'] ==
-          1// Convert back to DateTime
-      );
+          id: messageMap['id'],
+          text: messageMap['text'],
+          senderId: messageMap['senderId'],
+          senderName: messageMap['senderName'],
+          isSender: messageMap['isSender'] ==
+              1, // Convert int to bool (1 -> true, 0 -> false)
+          isDocument: messageMap['isDocument'] ==
+              1, // Convert int to bool (1 -> true, 0 -> false)
+          timestamp:
+              DateTime.fromMillisecondsSinceEpoch(messageMap['timestamp']),
+          isSent: messageMap['isSent'] == 1 // Convert back to DateTime
+          );
     }).toList();
   }
 
@@ -203,12 +206,13 @@ class ChatDatabase {
             message.isDocument ? 1 : 0, // Convert bool to int (1 or 0)
         'timestamp': message.timestamp
             .millisecondsSinceEpoch, // Store timestamp as milliseconds
-      'isSent':  message.isSent ? 1 : 0, // Store timestamp as milliseconds
+        'isSent': message.isSent ? 1 : 0, // Store timestamp as milliseconds
       },
       where: 'id = ?',
       whereArgs: [message.id],
     );
   }
+
 // Update message status (e.g., isSent)
   Future<int> updateMessageStatus(String messageId, bool isSent) async {
     final db = await database;
@@ -223,6 +227,7 @@ class ChatDatabase {
       whereArgs: [messageId],
     );
   }
+
   // Delete a chat (deletes all related messages due to cascade)
   Future<int> deleteChat(int chatId) async {
     final db = await database;

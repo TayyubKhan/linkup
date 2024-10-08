@@ -6,6 +6,7 @@
 // import 'package:nearby_connections/nearby_connections.dart';
 // import 'package:riverpod_annotation/riverpod_annotation.dart';
 // import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+// import '../common_viewmodel/nearby_communation_service/nearby_communication_service.dart';
 // import '../features/chat/model/chat_model.dart';
 // import '../features/chat/viewmodel/message_viewmodel.dart';
 // import '../features/continue/viewModel/ContinueViewModel.dart';

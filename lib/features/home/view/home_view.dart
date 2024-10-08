@@ -204,55 +204,107 @@ class _HomeViewState extends ConsumerState<HomeView> {
           Nearby().acceptConnection(
             id,
             onPayLoadRecieved: (String endpointId, Payload payload) async {
-              String parentDir = (await getExternalStorageDirectory())!.absolute.path;
+              String parentDir =
+                  (await getExternalStorageDirectory())!.absolute.path;
 
               if (payload.type == PayloadType.BYTES) {
                 String str = String.fromCharCodes(payload.bytes!);
-
-                // Check if this is an acknowledgment (ACK)
                 if (str.startsWith("ACK:")) {
                   // This is an ACK, extract messageId
                   String ackMessageId = str.split(':')[1];
-                  final chatId = await ref.read(chatViewModelProvider.notifier).getChatId(info.endpointName);
+                  final chatId = await ref
+                      .read(chatViewModelProvider.notifier)
+                      .getChatId(info.endpointName);
                   // Update the 'isSent' status in the database
-                  ref.read(messageViewModelProvider(chatId!).notifier).updateMessageStatus(ackMessageId, true);
-                  print("Received ACK for messageId: $ackMessageId, updated isSent in database.");
+                  ref
+                      .read(messageViewModelProvider(chatId!).notifier)
+                      .updateMessageStatus(ackMessageId, true);
+                  print(
+                      "Received ACK for messageId: $ackMessageId, updated isSent in database.");
                   return;
                 } else if (str.contains(':')) {
-                  // This is a regular message (not an ACK)
                   List<String> parts = str.split(':');
-                  String content = parts[0];
-                  String messageId = parts[1]; // Extract messageId from the payload
 
-                  // Save the message to the database
-                  final chatId = await ref.read(chatViewModelProvider.notifier).getChatId(info.endpointName);
-                  final MessageModel message = MessageModel(
-                    id: DateTime.now().millisecondsSinceEpoch.toString(),
-                    text: content,
-                    senderId: endpointId,
-                    senderName: name.name!,
-                    timestamp: DateTime.now(),
-                    isSender: false,
-                    isDocument: false,
-                    isSent: true,
-                  );
+                  // If it's a message payload
+                  if (parts.length == 2) {
+                    String content = parts[0];
+                    String messageId = parts[1]; // Extract messageId
 
-                  ref.read(messageViewModelProvider(chatId!).notifier).addMessage(message, chatId);
-                  print("Received and saved message: $content from $endpointId");
+                    // Save the message to the database
+                    final chatId = await ref
+                        .read(chatViewModelProvider.notifier)
+                        .getChatId(info.endpointName);
+                    final MessageModel message = MessageModel(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      text: content,
+                      senderId: endpointId,
+                      senderName: name.name!,
+                      timestamp: DateTime.now(),
+                      isSender: false,
+                      isDocument: false,
+                      isSent: true,
+                    );
+                    ref
+                        .read(messageViewModelProvider(chatId!).notifier)
+                        .addMessage(message, chatId);
+                    print(
+                        "Received and saved message: $content from $endpointId");
 
-                  // Send an acknowledgment with the same messageId
-                  await Nearby().sendBytesPayload(endpointId, Uint8List.fromList("ACK:$messageId".codeUnits)); // Send acknowledgment
-                  print("Sent acknowledgment for messageId: $messageId");
-                } else {
-                  // Handle other cases, e.g., file transfer or malformed messages
+                    // Send acknowledgment with the same messageId
+                    await Nearby().sendBytesPayload(endpointId,
+                        Uint8List.fromList("ACK:$messageId".codeUnits));
+                    print("Sent acknowledgment for messageId: $messageId");
+                  }
+                  // Handle file payloads (payloadId:filename:messageId)
+                  else if (parts.length == 3) {
+                    int payloadId = int.parse(parts[0]);
+                    String fileName = parts[1];
+                    String messageId = parts[2]; // messageId for ACK
+
+                    if (map.containsKey(payloadId)) {
+                      if (tempFileUri != null) {
+                        moveFile(tempFileUri!,
+                            fileName); // Move the file to the desired location
+
+                        // Optionally save the file message to the database
+                        final chatId = await ref
+                            .read(chatViewModelProvider.notifier)
+                            .getChatId(info.endpointName);
+                        final MessageModel message = MessageModel(
+                          id: DateTime.now().millisecondsSinceEpoch.toString(),
+                          text: fileName, // or some other indicator for a file
+                          senderId: endpointId,
+                          senderName: name.name!,
+                          timestamp: DateTime.now(),
+                          isSender: false,
+                          isDocument: true,
+                          isSent: true,
+                        );
+
+                        ref
+                            .read(messageViewModelProvider(chatId!).notifier)
+                            .addMessage(message, chatId);
+
+                        // Send acknowledgment for file transfer
+                        await Nearby().sendBytesPayload(endpointId,
+                            Uint8List.fromList("ACK:$messageId".codeUnits));
+                        print(
+                            "Sent acknowledgment for file with messageId: $messageId");
+                      } else {}
+                    } else {
+                      // If payloadId doesn't exist in the map, add it for later processing
+                      map[payloadId] = fileName;
+                    }
+                  }
                 }
               } else if (payload.type == PayloadType.FILE) {
-                // Handle file payload
                 tempFileUri = payload.uri;
               }
             },
-            onPayloadTransferUpdate: (String endpointId, PayloadTransferUpdate update) async {
-              String parentDir = (await getExternalStorageDirectory())!.absolute.path;
+            onPayloadTransferUpdate:
+                (String endpointId, PayloadTransferUpdate update) async {
+              String parentDir =
+                  (await getExternalStorageDirectory())!.absolute.path;
 
               if (update.status == PayloadStatus.IN_PROGRESS) {
                 print("Bytes Transferred: ${update.bytesTransferred}");
@@ -260,7 +312,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 print("File transfer failed");
                 // Optionally showSnackbar("$endpointId: Failed to transfer file");
               } else if (update.status == PayloadStatus.SUCCESS) {
-                print("Transfer successful. Total bytes = ${update.totalBytes}");
+                print(
+                    "Transfer successful. Total bytes = ${update.totalBytes}");
 
                 if (map.containsKey(update.id)) {
                   // Move file to the final location after successful transfer
@@ -270,7 +323,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       String filePath = '$parentDir/$fileName';
 
                       // Fetch chatId
-                      final chatId = await ref.read(chatViewModelProvider.notifier).getChatId(info.endpointName);
+                      final chatId = await ref
+                          .read(chatViewModelProvider.notifier)
+                          .getChatId(info.endpointName);
 
                       // Create a message with the file path and set isDocument to true
                       final MessageModel fileMessage = MessageModel(
@@ -285,7 +340,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       );
 
                       // Add the file message to the message view model
-                      ref.read(messageViewModelProvider(chatId!).notifier).addMessage(fileMessage, chatId);
+                      ref
+                          .read(messageViewModelProvider(chatId!).notifier)
+                          .addMessage(fileMessage, chatId);
                       print("Saved file message in database: $filePath");
                     } else {
                       print("Failed to move file");
@@ -297,7 +354,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 }
               }
             },
-
           ).then((v) async {
             // Connection accepted, now checking for unsent messages
             // Fetch unsent messages from the local database

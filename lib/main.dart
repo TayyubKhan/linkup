@@ -6,19 +6,25 @@ import 'package:linkup/utils/colors.dart';
 import 'package:linkup/utils/routes/routesName.dart';
 import 'package:linkup/utils/routes/routesSetting.dart';
 
-void main() {
+import 'core/notificationRepo.dart';
+import 'core/servcies_locator.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotificationService.init(); // Initialize notifications
   runApp(ProviderScope(child: MyApp()));
 }
 
 ThemeData theme = ThemeData();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    setupLocator(ref);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

@@ -2,13 +2,16 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart'; // Importing file_picker
+import 'package:linkup/Viewmodel/connectionViewModel.dart';
 import 'package:linkup/features/chat/model/message_model/message_model.dart';
 import 'package:linkup/features/continue/viewModel/ContinueViewModel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../Components/backicon.dart';
+import '../../../core/repository/connection_repository.dart';
 import '../../../utils/colors.dart';
 import '../viewmodel/message_viewmodel.dart';
 import 'package:open_file/open_file.dart';
@@ -38,6 +41,8 @@ class ChatView extends ConsumerStatefulWidget {
 
 class _ChatViewState extends ConsumerState<ChatView>
     with AutomaticKeepAliveClientMixin {
+  final connectionRepo = GetIt.I<ConnectionRepositoryImplementation>();
+
   final AutoScrollController _scrollController = AutoScrollController();
   bool isEmojiVisible = false;
   PlatformFile? _selectedFile; // Variable to store the selected file
@@ -67,8 +72,8 @@ class _ChatViewState extends ConsumerState<ChatView>
           IconButton(
             icon: Icon(Icons.more_vert, color: primaryBlack),
             onPressed: () async {
-              final name = await ref.read(continueViewModelProvider.future);
-              log(name.name!);
+              final value=ref.read(connectedEndpointIdProvider);
+              print(value);
             },
           ),
         ],
@@ -334,7 +339,7 @@ class _ChatViewState extends ConsumerState<ChatView>
           isDocument: false,
           isSent: false,
         );
-        widget.sendMessage(_textController.text, messageId, false);
+        connectionRepo.sendMessage(_textController.text, messageId, false);
 
         // Save the text message in SQLite and send via Bluetooth
         ref
@@ -378,7 +383,7 @@ class _ChatViewState extends ConsumerState<ChatView>
       isSender: true,
       isDocument: true, isSent: false,
     );
-    widget.sendMessage(file, messageId, true);
+    connectionRepo.sendMessage(file, messageId, true);
     // Save the file message in SQLite and send the file via Bluetooth
     ref
         .read(messageViewModelProvider(widget.chatId).notifier)

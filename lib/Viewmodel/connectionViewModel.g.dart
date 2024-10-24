@@ -1,26 +1,27 @@
 // // GENERATED CODE - DO NOT MODIFY BY HAND
 //
-// part of 'temppod.dart';
+// part of 'connectionViewModel.dart';
 //
 // // **************************************************************************
 // // RiverpodGenerator
 // // **************************************************************************
 //
-// String _$tempViewModelHash() => r'0e0584846502b410fff278c609751c32800c1622';
+// String _$connectionViewModelHash() =>
+//     r'00db8bd4c251900fb9ccdcf8c36cf19b19cd978c';
 //
-// /// See also [TempViewModel].
-// @ProviderFor(TempViewModel)
-// final tempViewModelProvider =
-//     AutoDisposeNotifierProvider<TempViewModel, ChatState>.internal(
-//   TempViewModel.new,
-//   name: r'tempViewModelProvider',
+// /// See also [ConnectionViewModel].
+// @ProviderFor(ConnectionViewModel)
+// final connectionViewModelProvider =
+//     AutoDisposeNotifierProvider<ConnectionViewModel, ChatState>.internal(
+//   ConnectionViewModel.new,
+//   name: r'connectionViewModelProvider',
 //   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
 //       ? null
-//       : _$tempViewModelHash,
+//       : _$connectionViewModelHash,
 //   dependencies: null,
 //   allTransitiveDependencies: null,
 // );
 //
-// typedef _$TempViewModel = AutoDisposeNotifier<ChatState>;
+// typedef _$ConnectionViewModel = AutoDisposeNotifier<ChatState>;
 // // ignore_for_file: type=lint
 // // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

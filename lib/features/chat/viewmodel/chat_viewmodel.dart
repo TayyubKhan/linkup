@@ -69,5 +69,11 @@ class ChatViewModel extends _$ChatViewModel {
     }
     state = AsyncValue.data(currentChats);
   }
+  Future<void> clearDatabase() async {
+    // Clear the database using the ChatDatabase method
+    await _chatDatabase.clearDatabase();
 
+    // Update the state to reflect that all data is cleared
+    state = const AsyncValue.data([]);
+  }
 }

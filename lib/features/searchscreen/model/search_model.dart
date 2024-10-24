@@ -1,4 +1,4 @@
-import '../../../common_viewmodel/nearby_communation_service/nearby_communication_service.dart';
+import '../../../temporary/scan.dart';
 
 class SearchModel {
   final bool isAdvertising;
@@ -13,8 +13,8 @@ class SearchModel {
     this.isDiscovering = false,
     this.isConnected = false,
     this.connectedDevices = const [],
-    this.discoveredDevices =  const [],
-    this.messages =  const[],
+    this.discoveredDevices = const [],
+    this.messages = const [],
   });
 
   SearchModel copyWith({

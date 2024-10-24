@@ -247,4 +247,15 @@ class ChatDatabase {
       whereArgs: [messageId],
     );
   }
+  // Delete all data from both chats and messages tables
+  Future<void> clearDatabase() async {
+    final db = await database;
+
+    // Delete all entries from the messages table
+    await db.delete(_messageTable);
+
+    // Delete all entries from the chats table
+    await db.delete(_chatTable);
+  }
+
 }

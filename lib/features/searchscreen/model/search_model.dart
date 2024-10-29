@@ -1,4 +1,5 @@
-import '../../../temporary/scan.dart';
+
+import '../../../core/discoveredDevicesModel.dart';
 
 class SearchModel {
   final bool isAdvertising;

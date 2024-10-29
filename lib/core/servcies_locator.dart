@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linkup/core/repository/connection_repository.dart'; // For WidgetRef
 
 final GetIt getIt = GetIt.instance;
-
 void setupLocator(WidgetRef ref) {
   // Check if ConnectionRepositoryImplementation is already registered
   if (!getIt.isRegistered<ConnectionRepositoryImplementation>()) {

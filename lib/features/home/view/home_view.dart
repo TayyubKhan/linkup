@@ -16,7 +16,6 @@ import 'package:nearby_connections/nearby_connections.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/repository/connection_repository.dart';
-import '../../../temporary/scan.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/routes/routesName.dart';
 import '../../chat/model/chat_model.dart';

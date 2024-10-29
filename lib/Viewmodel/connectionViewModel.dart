@@ -1,6 +1,6 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../temporary/scan.dart';
+import '../core/discoveredDevicesModel.dart';
+
 final connectedDevicesProvider = StateProvider<List<String>>((ref) => const []);
 final connectedEndpointIdProvider = StateProvider<String>((ref) => '');
 final isConnectedProvider = StateProvider<bool>((ref) => false);

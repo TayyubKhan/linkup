@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linkup/temporary/temp.dart';
 import 'package:linkup/utils/colors.dart';
 import 'package:linkup/utils/routes/routesName.dart';
 import 'package:linkup/utils/routes/routesSetting.dart';
-
-import 'core/notificationRepo.dart';
 import 'core/servcies_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalNotificationService.init(); // Initialize notifications
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 ThemeData theme = ThemeData();

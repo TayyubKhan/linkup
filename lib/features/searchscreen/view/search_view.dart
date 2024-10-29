@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:linkup/Viewmodel/connectionViewModel.dart';
 import 'package:linkup/main.dart';
-import 'package:linkup/temporary/scan.dart';
 import 'package:lottie/lottie.dart';
 import '../../../Components/backicon.dart';
 import '../../../core/repository/connection_repository.dart';

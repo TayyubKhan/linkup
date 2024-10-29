@@ -14,8 +14,7 @@ import '../../features/chat/viewmodel/message_viewmodel.dart';
 import '../../features/continue/viewModel/ContinueViewModel.dart';
 import '../../features/home/viewmodel/home_viewmodel.dart';
 import '../../main.dart';
-import '../../temporary/scan.dart';
-import '../notificationRepo.dart';
+import '../discoveredDevicesModel.dart';
 
 sealed class ConnectionRepository {
   Future<void> startDiscovery() async {}
@@ -83,7 +82,6 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
           ref.read(isConnectedProvider.notifier).state = false;
         },
       );
-      print("Advertising started.");
     } catch (e) {
       ref.read(isAdvertisingProvider.notifier).state = false;
     }
@@ -172,11 +170,6 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
                 ref
                     .read(messageViewModelProvider(chatId!).notifier)
                     .addMessage(message, chatId);
-                LocalNotificationService.showNotification(
-                  0,
-                  info.endpointName,
-                  content,
-                );
                 await Nearby().sendBytesPayload(
                     endpointId, Uint8List.fromList("ACK:$messageId".codeUnits));
               } else if (parts.length == 3) {
@@ -208,11 +201,6 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
 
                     await Nearby().sendBytesPayload(endpointId,
                         Uint8List.fromList("ACK:$messageId".codeUnits));
-                    LocalNotificationService.showNotification(
-                      0,
-                      info.endpointName,
-                      fileName,
-                    );
                   } else {}
                 } else {
                   map[payloadId] = fileName;
@@ -229,12 +217,8 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
               (await getExternalStorageDirectory())!.absolute.path;
 
           if (update.status == PayloadStatus.IN_PROGRESS) {
-            print("Bytes Transferred: ${update.bytesTransferred}");
           } else if (update.status == PayloadStatus.FAILURE) {
-            print("File transfer failed");
           } else if (update.status == PayloadStatus.SUCCESS) {
-            print("Transfer successful. Total bytes = ${update.totalBytes}");
-
             if (map.containsKey(update.id)) {
               String fileName = map[update.id]!;
               moveFile(tempFileUri!, fileName).then((isMoved) async {
@@ -259,9 +243,7 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
                   ref
                       .read(messageViewModelProvider(chatId!).notifier)
                       .addMessage(fileMessage, chatId);
-                  print("Saved file message in database: $filePath");
                 } else {
-                  print("Failed to move file");
                 }
               });
             } else {
@@ -372,8 +354,7 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
           );
         }
       }
-    } else {
-    }
+    } else {}
   }
 
   @override
@@ -381,12 +362,14 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
     ref.read(isAdvertisingProvider.notifier).state = false;
     await Nearby().stopAdvertising();
   }
+
   @override
   Future<void> stopDiscovery() async {
     ref.read(isDiscoveringProvider.notifier).state = false;
     ref.read(isLoadingProvider.notifier).state = false;
     await Nearby().stopAdvertising();
   }
+
   @override
   Future<bool> moveFile(String uri, String fileName) async {
     String parentDir = (await getExternalStorageDirectory())!.absolute.path;

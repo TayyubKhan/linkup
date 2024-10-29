@@ -6,7 +6,6 @@ import 'package:linkup/features/continue/viewModel/ContinueViewModel.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/utils/routes/routesName.dart';
 
-import '../../../temporary/temp.dart';
 
 class ContinueView extends StatefulWidget {
   const ContinueView({super.key});

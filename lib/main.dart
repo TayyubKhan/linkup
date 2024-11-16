@@ -38,7 +38,7 @@ class MyApp extends ConsumerWidget {
           elevation: 10, // App bar elevation
           iconTheme: IconThemeData(color: primaryWhite), // App bar icon color
           titleTextStyle: TextStyle(
-              color: primaryWhite, fontSize: 20), // App bar title style
+              color: primaryWhite, fontSize: 50), // App bar title style
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,

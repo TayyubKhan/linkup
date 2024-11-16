@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:file_picker/file_picker.dart'; // Importing file_picker
+import 'package:file_picker/file_picker.dart';
 import 'package:linkup/Viewmodel/connectionViewModel.dart';
 import 'package:linkup/features/chat/model/message_model/message_model.dart';
 import 'package:linkup/features/continue/viewModel/ContinueViewModel.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../Components/backicon.dart';
 import '../../../core/repository/connection_repository.dart';
@@ -20,7 +19,7 @@ import 'package:path/path.dart' as path;
 class ChatView extends ConsumerStatefulWidget {
   final String name;
   final int chatId;
-  final String deviceId; // chatId is the same as deviceId
+  final String deviceId;
   final Function(String, String, bool) sendMessage;
   bool isConnected;
   List<String> connectedDevices;
@@ -72,7 +71,7 @@ class _ChatViewState extends ConsumerState<ChatView>
           IconButton(
             icon: Icon(Icons.more_vert, color: primaryBlack),
             onPressed: () async {
-              final value=ref.read(connectedEndpointIdProvider);
+              final value = ref.read(connectedEndpointIdProvider);
               print(value);
             },
           ),
@@ -131,10 +130,8 @@ class _ChatViewState extends ConsumerState<ChatView>
                 Flexible(
                   child: InkWell(
                     onTap: () async {
-                      final tempPath =
-                          (await getExternalStorageDirectory())!.absolute.path;
                       message.isDocument
-                          ? openOtherTypeFile('$tempPath/${message.text}')
+                          ? openOtherTypeFile(message.text)
                           : null;
                     },
                     child: Container(

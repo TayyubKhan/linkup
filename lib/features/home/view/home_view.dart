@@ -71,116 +71,124 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final deleteViewModelNotifier = ref.read(deleteViewModelProvider.notifier);
     final selectedChats = deleteViewModel.selectedChatIds;
     final chatList = ref.watch(homeViewModelProvider);
-    return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Text("LinkUp", style: Theme.of(context).textTheme.titleLarge),
-        automaticallyImplyLeading: false,
-        actions: [
-          if (isSelecting) // Show delete button when chats are selected
-            IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: primaryBlack,
-              ),
-              onPressed: () {
-                deleteViewModelNotifier
-                    .deleteSelectedChats(); // Delete selected chats
-                setState(() {
-                  isSelecting = false; // Exit selection mode
-                });
-              },
-            ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, RoutesName.settingView);
-              },
-              child: Icon(
-                Icons.settings,
-                color: Theme.of(context).iconTheme.color,
-              ),
-            ),
-          )
-        ],
-      ),
-      body: chatList.when(
-        data: (chats) => chats.isEmpty
-            ? const Center(child: Text('No Chats Available'))
-            : ListView.builder(
-                itemCount: chats.length,
-                itemBuilder: (context, i) {
-                  final chat = chats[i];
-                  final isSelected = selectedChats.contains(chat.id);
-                  ref.watch(messageViewModelProvider(chat.id)).maybeWhen(
-                        data: (messages) => messages.isNotEmpty
-                            ? messages.last // Fetch the last message
-                            : null,
-                        orElse: () => null,
-                      );
-                  return Dismissible(
-                    key: Key(chat.id.toString()),
-                    onDismissed: (_) {
-                      ref
-                          .read(homeViewModelProvider.notifier)
-                          .deleteChat(chat.id);
-                    },
-                    background: Container(color: Colors.red),
-                    child: ListTile(
-                      leading: isSelecting
-                          ? Checkbox(
-                              value: isSelected,
-                              onChanged: (bool? value) {
-                                deleteViewModelNotifier
-                                    .toggleChatSelection(chat.id);
-                                if (selectedChats.isEmpty) {
-                                  setState(() {
-                                    isSelecting = false;
-                                  });
-                                }
-                              },
-                            )
-                          : const Icon(Icons.chat),
-                      title: Text(chat.chatName),
-                      subtitle: Text('Created at: ${chat.createdAt}'),
-                      onTap: () async {
-                        if (isSelecting) {
-                          deleteViewModelNotifier.toggleChatSelection(chat.id);
-                        } else {
-                          ref.read(messageViewModelProvider(chat.id));
-                          navigatorKey.currentState!.push(MaterialPageRoute(
-                              builder: (context) => ChatView(
-                                    chatId: chat.id,
-                                    deviceId: chat.deviceId,
-                                    sendMessage: connectionRepo.sendMessage,
-                                    name: chat.chatName,
-                                  )));
-                        }
-                      },
-                      onLongPress: () {
-                        setState(() {
-                          isSelecting = true;
-                        });
-                        deleteViewModelNotifier.toggleChatSelection(chat.id);
-                      },
-                    ),
-                  );
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (v,k){
+setState(() {
+  isSelecting=false;
+
+});      },
+      child: Scaffold(
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: Text("LinkUp", style: Theme.of(context).textTheme.titleLarge),
+          automaticallyImplyLeading: false,
+          actions: [
+            if (isSelecting) // Show delete button when chats are selected
+              IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: primaryBlack,
+                ),
+                onPressed: () {
+                  deleteViewModelNotifier
+                      .deleteSelectedChats(); // Delete selected chats
+                  setState(() {
+                    isSelecting = false; // Exit selection mode
+                  });
                 },
               ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          navigatorKey.currentState!.pushNamed(RoutesName.searchView);
-        },
-        backgroundColor: primaryBlack,
-        child: const Icon(
-          CupertinoIcons.search,
-          color: Colors.white,
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, RoutesName.settingView);
+                },
+                child: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+              ),
+            )
+          ],
+        ),
+        body: chatList.when(
+          data: (chats) => chats.isEmpty
+              ? const Center(child: Text('No Chats Available'))
+              : ListView.builder(
+                  itemCount: chats.length,
+                  itemBuilder: (context, i) {
+                    final chat = chats[i];
+                    final isSelected = selectedChats.contains(chat.id);
+                    ref.watch(messageViewModelProvider(chat.id)).maybeWhen(
+                          data: (messages) => messages.isNotEmpty
+                              ? messages.last // Fetch the last message
+                              : null,
+                          orElse: () => null,
+                        );
+                    return Dismissible(
+                      key: Key(chat.id.toString()),
+                      onDismissed: (_) {
+                        ref
+                            .read(homeViewModelProvider.notifier)
+                            .deleteChat(chat.id);
+                      },
+                      background: Container(color: Colors.red),
+                      child: ListTile(
+                        leading: isSelecting
+                            ? Checkbox(
+                                value: isSelected,
+                                onChanged: (bool? value) {
+                                  deleteViewModelNotifier
+                                      .toggleChatSelection(chat.id);
+                                  if (selectedChats.isEmpty) {
+                                    setState(() {
+                                      isSelecting = false;
+                                    });
+                                  }
+                                },
+                              )
+                            : const Icon(Icons.chat),
+                        title: Text(chat.chatName),
+                        subtitle: Text('Created at: ${chat.createdAt}'),
+                        onTap: () async {
+                          if (isSelecting) {
+                            deleteViewModelNotifier.toggleChatSelection(chat.id);
+                          } else {
+                            ref.read(messageViewModelProvider(chat.id));
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) => ChatView(
+                                      chatId: chat.id,
+                                      deviceId: chat.deviceId,
+                                      sendMessage: connectionRepo.sendMessage,
+                                      name: chat.chatName,
+                                    )));
+                          }
+                        },
+                        onLongPress: () {
+                          setState(() {
+                            isSelecting = true;
+                          });
+                          deleteViewModelNotifier.toggleChatSelection(chat.id);
+                        },
+                      ),
+                    );
+                  },
+                ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            navigatorKey.currentState!.pushNamed(RoutesName.searchView);
+          },
+          backgroundColor: primaryBlack,
+          child: const Icon(
+            CupertinoIcons.search,
+            color: Colors.white,
+          ),
         ),
       ),
     );

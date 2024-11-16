@@ -27,7 +27,7 @@ class AppListTile extends StatelessWidget {
       onTap: onTap,
       title: Text(
         title,
-        style:  TextStyle(fontFamily: 'pop', fontWeight: FontWeight.w800),
+        style:  const TextStyle(fontFamily: 'pop', fontWeight: FontWeight.w800),
       ),
       leading:  CircleAvatar(
           backgroundColor: primaryBlack,
@@ -44,7 +44,7 @@ class AppListTile extends StatelessWidget {
         children: [
           Text(
             time,
-            style:  TextStyle(fontFamily: 'pop', fontSize: 11),
+            style:  const TextStyle(fontFamily: 'pop', fontSize: 11),
           ),
           isOnline
               ? Container(

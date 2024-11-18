@@ -138,6 +138,8 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
         onPayLoadRecieved: (String endpointId, Payload payload) async {
           if (payload.type == PayloadType.BYTES) {
             String str = String.fromCharCodes(payload.bytes!);
+            // ACK: message id= ( acknowledgement structure)
+            
             if (str.startsWith("ACK:")) {
               String ackMessageId = str.split(':')[1];
               final chatId = await ref
@@ -149,6 +151,7 @@ class ConnectionRepositoryImplementation implements ConnectionRepository {
               return;
             } else if (str.contains(':')) {
               List<String> parts = str.split(':');
+              // part {0} message : part {1} message id
 
               if (parts.length == 2) {
                 String content = parts[0];
